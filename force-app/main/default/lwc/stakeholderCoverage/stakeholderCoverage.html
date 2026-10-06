@@ -1,0 +1,118 @@
+<template>
+    <div class="coverage-card">
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasData}>
+                <!-- Header -->
+                <div class="coverage-header">
+                    <div class="header-title">
+                        <span class="header-icon">📊</span>
+                        <h2>Stakeholder Coverage</h2>
+                    </div>
+                    <div class={statusClass}>
+                        {coverage.coverageStatus}
+                    </div>
+                </div>
+
+                <!-- Main Coverage Display -->
+                <div class="main-section">
+                    <div class="coverage-ring-container">
+                        <svg viewBox="0 0 120 120" class="coverage-ring">
+                            <circle cx="60" cy="60" r="54" class="ring-bg"></circle>
+                            <circle cx="60" cy="60" r="54" class={ringClass}
+                                style={ringStyle}
+                                transform="rotate(-90 60 60)"></circle>
+                        </svg>
+                        <div class="ring-value-container">
+                            <span class="ring-value">{coveragePercentage}%</span>
+                            <span class="ring-label">Coverage</span>
+                        </div>
+                    </div>
+                    <div class="coverage-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">{coverage.coveredRoles}</span>
+                            <span class="stat-label">Roles Covered</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-value">{coverage.requiredRoles}</span>
+                            <span class="stat-label">Required Roles</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-value">{coverage.totalStakeholders}</span>
+                            <span class="stat-label">Total Stakeholders</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Coverage Grid -->
+                <div class="roles-section">
+                    <h3 class="section-title">Role Coverage</h3>
+                    <div class="roles-grid">
+                        <div class={decisionMakerClass}>
+                            <span class="role-icon">{decisionMakerIcon}</span>
+                            <span class="role-name">Decision Maker</span>
+                        </div>
+                        <div class={economicBuyerClass}>
+                            <span class="role-icon">{economicBuyerIcon}</span>
+                            <span class="role-name">Economic Buyer</span>
+                        </div>
+                        <div class={technicalBuyerClass}>
+                            <span class="role-icon">{technicalBuyerIcon}</span>
+                            <span class="role-name">Technical Buyer</span>
+                        </div>
+                        <div class={championClass}>
+                            <span class="role-icon">{championIcon}</span>
+                            <span class="role-name">Champion</span>
+                        </div>
+                        <div class={influencerClass}>
+                            <span class="role-icon">{influencerIcon}</span>
+                            <span class="role-name">Influencer</span>
+                        </div>
+                        <div class={userClass}>
+                            <span class="role-icon">{userIcon}</span>
+                            <span class="role-name">User</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blocker Warning -->
+                <template if:true={hasBlockerWarning}>
+                    <div class="blocker-warning">
+                        <span class="warning-icon">⚠️</span>
+                        <span class="warning-text">Blocker identified in this account</span>
+                    </div>
+                </template>
+
+                <!-- Missing Roles -->
+                <template if:true={hasMissingRoles}>
+                    <div class="missing-section">
+                        <h3 class="section-title">Missing Roles</h3>
+                        <ul class="missing-list">
+                            <template for:each={missingRolesFormatted} for:item="item">
+                                <li key={item.role} class="missing-item">
+                                    <span class="missing-icon">○</span>
+                                    <span class="missing-text">{item.role}</span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+
+            <template if:false={hasData}>
+                <div class="empty-state">
+                    <span class="empty-icon">📋</span>
+                    <p class="empty-text">No stakeholder data available</p>
+                    <p class="empty-subtext">Add stakeholders to see coverage analysis</p>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Contact__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Role__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Last_Engagement_Date__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Days_Since_Last_Engagement__c</field>
+    </columns>
+    <description>Stakeholders with no recent engagement (30+ days)</description>
+    <filter>
+        <criteriaItems>
+            <column>Stakeholder__c.Days_Since_Last_Engagement__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>30</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Stakeholder__c.Account__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Cold Stakeholders (30+ Days)</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Stakeholder__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Stakeholder__c.Days_Since_Last_Engagement__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

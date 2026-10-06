@@ -1,0 +1,47 @@
+/* Loading State */
+.graph-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+/* jsMind Wrapper */
+.jsmind-wrapper {
+    width: 100%;
+    height: 600px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* jsMind Container */
+.jsmind-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Override jsMind default styles */
+.jsmind-container jmnode {
+    cursor: pointer;
+}
+
+.jsmind-container jmnode:hover {
+    opacity: 0.9;
+}
+
+/* Empty State */
+.graph-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    color: #706e6b;
+}
+
+.graph-empty lightning-icon {
+    color: #d1d5db;
+}

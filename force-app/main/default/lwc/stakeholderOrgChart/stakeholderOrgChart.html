@@ -1,0 +1,145 @@
+<template>
+    <div class="soc-container">
+        <!-- Header with filters and toggles -->
+        <div class="soc-header">
+            <div class="soc-title-section">
+                <h2 class="soc-title">Relationship Map</h2>
+                <span class="soc-subtitle" if:true={stakeholderCount}>{stakeholderCount} Contacts</span>
+            </div>
+
+            <div class="soc-controls">
+                <!-- Filter Section -->
+                 <div style="padding-bottom: 18px;">
+                <div class="soc-filters">
+                    <lightning-input
+                        type="search"
+                        placeholder="Search contacts..."
+                        value={searchTerm}
+                        onchange={handleSearch}
+                        class="soc-search">
+                    </lightning-input>
+
+                    <lightning-combobox
+                        label=""
+                        placeholder="Filter by Role"
+                        options={roleOptions}
+                        value={selectedRole}
+                        onchange={handleRoleFilter}
+                        class="soc-filter-combo">
+                    </lightning-combobox>
+                    </div>
+                </div>
+
+                <!-- Toggle Buttons -->
+                <div class="soc-toggles">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Opportunities"
+                            variant={opportunitiesToggleVariant}
+                            onclick={handleToggleOpportunities}
+                            icon-name="utility:opportunity">
+                        </lightning-button>
+                        <lightning-button
+                            label="Cases"
+                            variant={casesToggleVariant}
+                            onclick={handleToggleCases}
+                            icon-name="utility:case">
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+
+                <!-- Expand/Collapse Controls -->
+                <div class="soc-expand-controls">
+                    <lightning-button-group>
+                        <lightning-button
+                            label="Expand All"
+                            icon-name="utility:expand_all"
+                            onclick={handleExpandAll}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Collapse All"
+                            icon-name="utility:collapse_all"
+                            onclick={handleCollapseAll}
+                            variant="neutral">
+                        </lightning-button>
+                    </lightning-button-group>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div class="soc-zoom-controls">
+                    <lightning-button-icon
+                        icon-name="utility:refresh"
+                        alternative-text="Refresh"
+                        title="Refresh"
+                        onclick={handleRefresh}
+                        size="medium">
+                    </lightning-button-icon>
+                    <lightning-button-icon
+                        icon-name="utility:zoomin"
+                        alternative-text="Zoom In"
+                        onclick={handleZoomIn}
+                        size="medium">
+                    </lightning-button-icon>
+                    <lightning-button-icon
+                        icon-name="utility:zoomout"
+                        alternative-text="Zoom Out"
+                        onclick={handleZoomOut}
+                        size="medium">
+                    </lightning-button-icon>
+                    <lightning-button-icon
+                        icon-name="utility:expand"
+                        alternative-text="Fit to View"
+                        onclick={handleZoomReset}
+                        size="medium">
+                    </lightning-button-icon>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Area -->
+        <div class="soc-chart-wrapper">
+            <template if:true={isLoading}>
+                <div class="soc-loading">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={isLoading}>
+                <div class="soc-chart-container" lwc:dom="manual"></div>
+            </template>
+        </div>
+
+        <!-- Legend -->
+        <div class="soc-legend">
+            <div class="soc-legend-section">
+                <span class="soc-legend-title">Sentiment</span>
+                <div class="soc-legend-items">
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-champion">Champion</span>
+                    </div>
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-neutral">Neutral</span>
+                    </div>
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-detractor">Detractor</span>
+                    </div>
+                </div>
+            </div>
+            <div class="soc-legend-section">
+                <span class="soc-legend-title">Power</span>
+                <div class="soc-legend-items">
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-power-high">High</span>
+                    </div>
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-power-medium">Medium</span>
+                    </div>
+                    <div class="soc-legend-item">
+                        <span class="soc-badge soc-badge-power-low">Low</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

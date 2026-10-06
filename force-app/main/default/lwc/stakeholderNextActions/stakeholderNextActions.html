@@ -1,0 +1,55 @@
+<template>
+    <div class="actions-card">
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <!-- Header -->
+            <div class="card-header">
+                <div class="header-title">
+                    <span class="header-icon">🎯</span>
+                    <h2>Next Best Actions</h2>
+                </div>
+                <template if:true={highPriorityCount}>
+                    <div class="header-badge">
+                        <span class="badge-count">{highPriorityCount}</span>
+                        <span class="badge-label">High Priority</span>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Actions List -->
+            <div class="actions-content">
+                <template if:true={hasActions}>
+                    <ul class="actions-list">
+                        <template for:each={actions} for:item="action">
+                            <li key={action.key} class="action-item">
+                                <div class="action-priority">
+                                    <span class="priority-number">{action.priorityLabel}</span>
+                                </div>
+                                <div class="action-main">
+                                    <div class="action-header">
+                                        <span class="action-icon">{action.categoryIcon}</span>
+                                        <span class="action-title">{action.action}</span>
+                                        <span class={action.urgencyClass}>{action.urgency}</span>
+                                    </div>
+                                    <p class="action-description">{action.description}</p>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+                <template if:false={hasActions}>
+                    <div class="empty-state">
+                        <span class="empty-icon">✨</span>
+                        <p class="empty-text">No actions needed</p>
+                        <p class="empty-subtext">Your stakeholder engagement is on track!</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

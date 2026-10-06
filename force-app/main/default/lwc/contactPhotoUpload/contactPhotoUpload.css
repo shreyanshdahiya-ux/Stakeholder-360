@@ -1,0 +1,36 @@
+.photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: #f3f3f3;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.contact-photo {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #706e6b;
+    text-align: center;
+    padding: 2rem;
+}
+
+.photo-placeholder lightning-icon {
+    color: #c1c1c1;
+}
+
+.upload-section {
+    text-align: center;
+}

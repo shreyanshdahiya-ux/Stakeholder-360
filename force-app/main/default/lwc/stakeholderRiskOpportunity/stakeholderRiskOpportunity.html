@@ -1,0 +1,101 @@
+<template>
+    <div class="risk-opp-card">
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <div class="error-state">
+                    <span class="error-icon">⚠️</span>
+                    <p class="error-text">Failed to load data</p>
+                    <p class="error-subtext">{error}</p>
+                </div>
+            </template>
+
+            <!-- Header -->
+            <div class="card-header">
+                <div class="header-title">
+                    <span class="header-icon">⚡</span>
+                    <h2>Risk & Opportunity Engine</h2>
+                </div>
+                <div class="header-stats">
+                    <span class="stat-badge risk-badge">{riskCount} Risks</span>
+                    <span class="stat-badge opp-badge">{opportunityCount} Opportunities</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class={risksTabClass} data-tab="risks" onclick={handleTabClick}>
+                    <span class="tab-icon">🚨</span>
+                    <span>Risks</span>
+                    <template if:true={highRiskCount}>
+                        <span class="tab-count high">{highRiskCount}</span>
+                    </template>
+                </button>
+                <button class={opportunitiesTabClass} data-tab="opportunities" onclick={handleTabClick}>
+                    <span class="tab-icon">🌟</span>
+                    <span>Opportunities</span>
+                </button>
+            </div>
+
+            <!-- Risks Tab Content -->
+            <template if:true={isRisksTab}>
+                <div class="tab-content">
+                    <template if:true={hasRisks}>
+                        <ul class="signals-list">
+                            <template for:each={formattedRisks} for:item="risk">
+                                <li key={risk.key} class="signal-card risk-card">
+                                    <div class="signal-header">
+                                        <span class="signal-icon">{risk.categoryIcon}</span>
+                                        <span class="signal-title">{risk.title}</span>
+                                        <span class={risk.severityClass}>{risk.severity}</span>
+                                    </div>
+                                    <p class="signal-description">{risk.description}</p>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template if:false={hasRisks}>
+                        <div class="empty-tab">
+                            <span class="empty-icon">✅</span>
+                            <p class="empty-text">No risk signals detected</p>
+                            <p class="empty-subtext">Great job! Your stakeholder coverage looks healthy.</p>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Opportunities Tab Content -->
+            <template if:true={isOpportunitiesTab}>
+                <div class="tab-content">
+                    <template if:true={hasOpportunities}>
+                        <ul class="signals-list">
+                            <template for:each={formattedOpportunities} for:item="opp">
+                                <li key={opp.key} class="signal-card opp-card">
+                                    <div class="signal-header">
+                                        <span class="signal-icon">🌟</span>
+                                        <span class="signal-title">{opp.title}</span>
+                                        <span class={opp.impactClass}>{opp.impact}</span>
+                                    </div>
+                                    <p class="signal-description">{opp.description}</p>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template if:false={hasOpportunities}>
+                        <div class="empty-tab">
+                            <span class="empty-icon">💡</span>
+                            <p class="empty-text">No opportunity signals yet</p>
+                            <p class="empty-subtext">Build stronger relationships to unlock opportunities.</p>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

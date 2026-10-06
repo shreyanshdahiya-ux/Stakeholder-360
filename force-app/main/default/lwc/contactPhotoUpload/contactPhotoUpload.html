@@ -1,0 +1,73 @@
+<template>
+    <lightning-card title="Contact Photo" icon-name="standard:avatar">
+        <span slot="actions">
+            <template if:true={isRefreshing}>
+                <lightning-spinner alternative-text="Refreshing..." size="small"></lightning-spinner>
+            </template>
+        </span>
+        <lightning-button-icon
+            slot="actions"
+            icon-name="utility:refresh"
+            alternative-text="Refresh Photo"
+            title="Refresh Photo"
+            disabled={isRefreshing}
+            onclick={handleRefresh}>
+        </lightning-button-icon>
+        <div class="slds-p-around_medium">
+            <!-- Current Photo -->
+            <div class="photo-container">
+                <template if:true={hasPhoto}>
+                    <img src={photoUrl} alt="Contact Photo" class="contact-photo" onerror={handleImageError} />
+                </template>
+                <template if:false={hasPhoto}>
+                    <div class="photo-placeholder">
+                        <lightning-icon icon-name="standard:contact" size="large"></lightning-icon>
+                        <p class="slds-m-top_small">No photo uploaded</p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section slds-m-top_medium">
+                <lightning-input
+                    type="file"
+                    label="Upload New Photo"
+                    accept=".png,.jpg,.jpeg,.gif"
+                    onchange={handleFileChange}>
+                </lightning-input>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                    Accepted formats: PNG, JPG, JPEG, GIF. Max size: 5MB
+                </p>
+                <template if:true={fileName}>
+                    <p class="slds-m-top_x-small">
+                        <strong>Selected:</strong> {fileName}
+                    </p>
+                </template>
+                <div class="slds-m-top_small">
+                    <lightning-button
+                        label="Upload Photo"
+                        variant="brand"
+                        onclick={handleUpload}
+                        disabled={isUploadDisabled}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Uploading..." size="small"></lightning-spinner>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Delete Button -->
+            <template if:true={hasPhoto}>
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        label="Remove Photo"
+                        icon-name="utility:delete"
+                        onclick={handleRemovePhoto}
+                        variant="destructive">
+                    </lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,160 @@
+<template>
+    <lightning-card title="Stakeholder Insights" icon-name="standard:forecasts">
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasInsights}>
+                <div class="slds-p-around_medium">
+                    <!-- Health Dashboard -->
+                    <div class="health-dashboard">
+                        <div class="overall-health">
+                            <div class={healthClass}>
+                                <div class="health-value">{overallHealth}%</div>
+                                <div class="health-label">Overall Health</div>
+                                <div class="health-status">{healthStatus}</div>
+                            </div>
+                        </div>
+
+                        <div class="health-metrics">
+                            <div class="metric-item">
+                                <div class="metric-title">Coverage</div>
+                                <lightning-progress-bar value={insights.coverageHealth}></lightning-progress-bar>
+                                <div class="metric-value">{insights.coverageHealth}%</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-title">Relationship</div>
+                                <lightning-progress-bar value={insights.relationshipHealth}></lightning-progress-bar>
+                                <div class="metric-value">{insights.relationshipHealth}%</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-title">Engagement</div>
+                                <lightning-progress-bar value={insights.engagementHealth}></lightning-progress-bar>
+                                <div class="metric-value">{insights.engagementHealth}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Stats -->
+                    <div class="slds-grid slds-gutters slds-wrap slds-m-top_large">
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"><lightning-icon icon-name="standard:groups" size="large"></lightning-icon></div>
+                                <div class="stat-value">{insights.totalStakeholders}</div>
+                                <div class="stat-label">Total Stakeholders</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"><lightning-icon icon-name="standard:customer" size="large"></lightning-icon></div>
+                                <div class="stat-value">{insights.championCount}</div>
+                                <div class="stat-label">Champions</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"><lightning-icon icon-name="standard:user" size="large"></lightning-icon></div>
+                                <div class="stat-value">{insights.decisionMakerCount}</div>
+                                <div class="stat-label">Decision Makers</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="stat-card">
+                                <div class="stat-icon"><lightning-icon icon-name="standard:relationship" size="large"></lightning-icon></div>
+                                <div class="stat-value">{insights.averageRelationshipStrength}/5</div>
+                                <div class="strength-display">
+                                    <template for:each={strengthStars} for:item="star">
+                                        <span key={star.id} class={star.starClass}>
+                                            <lightning-icon
+                                                icon-name={star.iconName}
+                                                size="x-small">
+                                            </lightning-icon>
+                                        </span>
+                                    </template>
+                                </div>
+                                <div class="stat-label">Avg. Strength</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Insights -->
+                    <template if:true={hasInsightMessages}>
+                        <div class="slds-m-top_large">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Key Insights</h3>
+                            <div class="insight-list">
+                                <template for:each={insightItems} for:item="insight">
+                                    <div key={insight.id} class="insight-card">
+                                        <lightning-icon icon-name="utility:info" size="small"></lightning-icon>
+                                        <span>{insight.message}</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Stakeholder List -->
+                    <template if:true={hasStakeholders}>
+                        <div class="slds-m-top_large">
+                            <div class="section-header">
+                                <h3 class="slds-text-heading_small">Stakeholders</h3>
+                                <template if:true={showToggleButton}>
+                                    <lightning-button
+                                        label={toggleButtonLabel}
+                                        variant="base"
+                                        onclick={handleToggleStakeholders}>
+                                    </lightning-button>
+                                </template>
+                            </div>
+
+                            <div class="stakeholder-grid">
+                                <template for:each={displayedStakeholders} for:item="stakeholder">
+                                    <div key={stakeholder.id} class="stakeholder-card" data-contact-id={stakeholder.id} onclick={handleStakeholderClick}>
+                                        <div class="stakeholder-header">
+                                            <lightning-avatar
+                                                src={stakeholder.photoUrl}
+                                                fallback-icon-name={stakeholder.roleIcon}
+                                                size="medium"
+                                                alternative-text={stakeholder.name}>
+                                            </lightning-avatar>
+                                            <div class="stakeholder-info">
+                                                <div class="stakeholder-name">
+                                                    {stakeholder.name}
+                                                    <template if:true={stakeholder.isPrimary}>
+                                                        <span class="primary-badge">Primary</span>
+                                                    </template>
+                                                </div>
+                                                <div class="stakeholder-title">{stakeholder.title}</div>
+                                                <div class="stakeholder-role">{stakeholder.role}</div>
+                                            </div>
+                                        </div>
+                                        <div class="stakeholder-footer">
+                                            <div class="strength-indicator">
+                                                <span class="strength-label">Strength:</span>
+                                                <span class="strength-value">{stakeholder.relationshipStrength}/5</span>
+                                            </div>
+                                            <template if:true={stakeholder.isActive}>
+                                                <span class="active-badge">Active</span>
+                                            </template>
+                                            <template if:false={stakeholder.isActive}>
+                                                <span class="inactive-badge">Inactive</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasInsights}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">No stakeholder data available for this opportunity.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,28 @@
+.slds-section__title {
+    background: #f3f3f3;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.slds-section__title span {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.slds-section__content {
+    padding: 0.5rem 0;
+}
+
+.form-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    border-left: 4px solid #ba0517;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #ba0517;
+    font-weight: 600;
+}

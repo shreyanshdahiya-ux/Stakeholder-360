@@ -1,0 +1,125 @@
+<template>
+    <div class="score-card">
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasData}>
+                <!-- Header -->
+                <div class="score-header">
+                    <div class="header-title">
+                        <span class="header-icon">📊</span>
+                        <h2>Stakeholder Health</h2>
+                    </div>
+                    <div class={healthPillClass}>
+                        {healthStatus}
+                    </div>
+                </div>
+
+                <!-- Main Score Display -->
+                <div class="main-score-section">
+                    <div class="circular-score">
+                        <svg viewBox="0 0 120 120" class="score-ring">
+                            <circle cx="60" cy="60" r="54" class="score-ring-bg"></circle>
+                            <circle cx="60" cy="60" r="54" class={scoreRingClass}
+                                style={scoreRingStyle}
+                                transform="rotate(-90 60 60)"></circle>
+                        </svg>
+                        <div class="score-value-container">
+                            <span class={scoreValueClass}>{overallScorePercentage}</span>
+                            <span class="score-max">/100</span>
+                        </div>
+                    </div>
+                    <p class="score-description">{scoreDescription}</p>
+                </div>
+
+                <!-- Score Breakdown -->
+                <div class="breakdown-section">
+                    <h3 class="section-title">Score Breakdown</h3>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-header">
+                            <span class="breakdown-icon coverage-icon">👥</span>
+                            <span class="breakdown-label">Coverage</span>
+                            <span class="breakdown-value">{score.coverageScore}<span class="breakdown-max">/70</span></span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar coverage-bar" style={coverageBarStyle}></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-header">
+                            <span class="breakdown-icon relationship-icon">🤝</span>
+                            <span class="breakdown-label">Relationship</span>
+                            <span class="breakdown-value">{score.relationshipScore}<span class="breakdown-max">/15</span></span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar relationship-bar" style={relationshipBarStyle}></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-header">
+                            <span class="breakdown-icon engagement-icon">⚡</span>
+                            <span class="breakdown-label">Engagement</span>
+                            <span class="breakdown-value">{score.engagementScore}<span class="breakdown-max">/15</span></span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar engagement-bar" style={engagementBarStyle}></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Roles -->
+                <div class="roles-section">
+                    <h3 class="section-title">Key Roles</h3>
+                    <div class="roles-grid">
+                        <div class={championRoleClass}>
+                            <span class="role-icon">{championIcon}</span>
+                            <span class="role-label">Champion</span>
+                        </div>
+                        <div class={decisionMakerRoleClass}>
+                            <span class="role-icon">{decisionMakerIcon}</span>
+                            <span class="role-label">Decision Maker</span>
+                        </div>
+                        <div class={budgetHolderRoleClass}>
+                            <span class="role-icon">{budgetHolderIcon}</span>
+                            <span class="role-label">Budget Holder</span>
+                        </div>
+                        <div class="role-card stakeholders-card">
+                            <span class="stakeholder-count">{score.totalStakeholders}</span>
+                            <span class="role-label">Total Contacts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <template if:true={hasRecommendations}>
+                    <div class="recommendations-section">
+                        <h3 class="section-title">Recommendations</h3>
+                        <ul class="recommendations-list">
+                            <template for:each={recommendations} for:item="rec">
+                                <li key={rec.id} class="recommendation-item">
+                                    <span class="rec-icon">💡</span>
+                                    <span class="rec-text">{rec.text}</span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+
+            <template if:false={hasData}>
+                <div class="empty-state">
+                    <span class="empty-icon">📋</span>
+                    <p class="empty-text">No stakeholder data available</p>
+                    <p class="empty-subtext">Add contacts to this opportunity to see the health score</p>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

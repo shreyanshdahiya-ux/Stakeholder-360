@@ -1,0 +1,61 @@
+<template>
+    <div class="timeline-card">
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <!-- Header -->
+            <div class="card-header">
+                <div class="header-title">
+                    <span class="header-icon">📅</span>
+                    <h2>Stakeholder Timeline</h2>
+                </div>
+                <div class="header-count">
+                    {eventCount} Events
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <div class="timeline-error">
+                    <lightning-icon icon-name="utility:error" size="small" variant="error"></lightning-icon>
+                    <p class="timeline-error-text">{error}</p>
+                </div>
+            </template>
+
+            <!-- Timeline Content -->
+            <div class="timeline-content">
+                <template if:true={hasEvents}>
+                    <div class="timeline-list">
+                        <template for:each={events} for:item="event">
+                            <div key={event.key} class="timeline-item">
+                                <div class="timeline-marker">
+                                    <div class={event.categoryClass}></div>
+                                    <div class="timeline-line"></div>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="event-header">
+                                        <span class="event-icon">{event.categoryIcon}</span>
+                                        <span class="event-type">{event.eventType}</span>
+                                        <span class="event-date">{event.formattedDate}</span>
+                                    </div>
+                                    <p class="event-description">{event.description}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template if:false={hasEvents}>
+                    <div class="empty-state">
+                        <span class="empty-icon">📋</span>
+                        <p class="empty-text">No timeline events</p>
+                        <p class="empty-subtext">Activity will appear as stakeholders are added and updated</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

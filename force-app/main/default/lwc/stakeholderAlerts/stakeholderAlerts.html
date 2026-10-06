@@ -1,0 +1,97 @@
+<template>
+    <lightning-card title="Stakeholder Alerts" icon-name="standard:approval">
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasAlerts}>
+                <div class="slds-p-around_small">
+                    <!-- Alert Summary -->
+                    <div class="alert-summary">
+                        <template if:true={alertStats.errors}>
+                            <div class="summary-badge badge-error">
+                                <lightning-icon icon-name="utility:error" size="xx-small"></lightning-icon>
+                                <span>{alertStats.errors} Critical</span>
+                            </div>
+                        </template>
+                        <template if:true={alertStats.warnings}>
+                            <div class="summary-badge badge-warning">
+                                <lightning-icon icon-name="utility:warning" size="xx-small"></lightning-icon>
+                                <span>{alertStats.warnings} Warning</span>
+                            </div>
+                        </template>
+                        <template if:true={alertStats.success}>
+                            <div class="summary-badge badge-success">
+                                <lightning-icon icon-name="utility:success" size="xx-small"></lightning-icon>
+                                <span>{alertStats.success} Good</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Alert List -->
+                    <div class="alert-list">
+                        <!-- Error Alerts -->
+                        <template for:each={errorAlerts} for:item="alert">
+                            <div key={alert.id} class={alert.variantClass} data-contact-id={alert.contactId} onclick={handleAlertClick}>
+                                <div class="alert-header">
+                                    <lightning-icon icon-name={alert.iconName} size="small"></lightning-icon>
+                                    <span class="alert-title">{alert.title}</span>
+                                </div>
+                                <div class="alert-body">
+                                    <p class="alert-message">{alert.message}</p>
+                                    <p class="alert-recommendation">
+                                        <lightning-icon icon-name="utility:lightbulb" size="xx-small"></lightning-icon>
+                                        {alert.recommendation}
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Warning Alerts -->
+                        <template for:each={warningAlerts} for:item="alert">
+                            <div key={alert.id} class={alert.variantClass} data-contact-id={alert.contactId} onclick={handleAlertClick}>
+                                <div class="alert-header">
+                                    <lightning-icon icon-name={alert.iconName} size="small"></lightning-icon>
+                                    <span class="alert-title">{alert.title}</span>
+                                </div>
+                                <div class="alert-body">
+                                    <p class="alert-message">{alert.message}</p>
+                                    <p class="alert-recommendation">
+                                        <lightning-icon icon-name="utility:lightbulb" size="xx-small"></lightning-icon>
+                                        {alert.recommendation}
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Success Alerts -->
+                        <template for:each={successAlerts} for:item="alert">
+                            <div key={alert.id} class={alert.variantClass}>
+                                <div class="alert-header">
+                                    <lightning-icon icon-name={alert.iconName} size="small"></lightning-icon>
+                                    <span class="alert-title">{alert.title}</span>
+                                </div>
+                                <div class="alert-body">
+                                    <p class="alert-message">{alert.message}</p>
+                                    <p class="alert-recommendation">
+                                        <lightning-icon icon-name="utility:lightbulb" size="xx-small"></lightning-icon>
+                                        {alert.recommendation}
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={hasAlerts}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">No alerts available.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

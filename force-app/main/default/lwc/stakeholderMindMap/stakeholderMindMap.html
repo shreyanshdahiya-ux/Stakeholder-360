@@ -1,0 +1,493 @@
+<template>
+    <lightning-card title="Stakeholder Tree" icon-name="utility:hierarchy">
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button
+                    label="Expand All"
+                    icon-name="utility:expand_all"
+                    onclick={handleExpandAll}
+                    variant="neutral">
+                </lightning-button>
+                <lightning-button
+                    label="Collapse All"
+                    icon-name="utility:collapse_all"
+                    onclick={handleCollapseAll}
+                    variant="neutral">
+                </lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="tree-loading">
+                    <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Tree Container -->
+            <template if:false={isLoading}>
+                <!-- Error State -->
+                <template if:true={hasError}>
+                    <div class="tree-error">
+                        <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                        <p class="tree-error-title">Failed to load stakeholder tree</p>
+                        <p class="tree-error-sub">{error}</p>
+                    </div>
+                </template>
+
+                <template if:true={hasData}>
+                    <div class="tree-container">
+                        <!-- Account Root Node -->
+                        <div class="tree-root">
+                            <div class="tree-node node-account" onclick={handleAccountClick}>
+                                <div class="node-icon">
+                                    <lightning-icon icon-name="standard:account" size="medium"></lightning-icon>
+                                </div>
+                                <div class="node-content">
+                                    <span class="node-title">{accountName}</span>
+                                    <span class="node-subtitle">{totalContacts} Stakeholders</span>
+                                </div>
+                            </div>
+                            <div class="tree-connector-vertical"></div>
+                        </div>
+
+                        <!-- Category Branches -->
+                        <div class="tree-branches">
+                            <!-- Champions Branch -->
+                            <template if:true={hasChampions}>
+                                <div class="tree-branch branch-champions">
+                                    <div class="branch-header" onclick={toggleChampions}>
+                                        <div class="tree-node node-category node-champions">
+                                            <div class="node-icon">
+                                                <lightning-icon icon-name="utility:favorite" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="node-content">
+                                                <span class="node-title">Champions</span>
+                                                <span class="node-badge">{championCount}</span>
+                                            </div>
+                                            <div class="node-expand">
+                                                <lightning-icon icon-name={championsExpandIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showChampions}>
+                                        <div class="branch-children">
+                                            <template for:each={champions} for:item="contact">
+                                                <div key={contact.contactId} class="tree-contact-group">
+                                                    <div class="tree-contact">
+                                                        <div class="contact-connector"></div>
+                                                        <div class="tree-node node-contact node-positive"
+                                                             data-contact-id={contact.contactId}
+                                                             onclick={handleContactClick}>
+                                                            <template if:true={contact.photoUrl}>
+                                                                <img src={contact.photoUrl} alt={contact.contactName} class="node-avatar-photo" />
+                                                            </template>
+                                                            <template if:false={contact.photoUrl}>
+                                                                <div class="node-avatar">{contact.initials}</div>
+                                                            </template>
+                                                            <div class="node-content">
+                                                                <span class="node-title">{contact.contactName}</span>
+                                                                <span class="node-subtitle">{contact.title}</span>
+                                                            </div>
+                                                            <template if:true={contact.hasOpportunities}>
+                                                                <div class="node-opp-toggle"
+                                                                     data-contact-id={contact.contactId}
+                                                                     onclick={toggleContactExpand}>
+                                                                    <span class="opp-count">{contact.opportunityCount}</span>
+                                                                    <lightning-icon
+                                                                        icon-name={contact.expandIcon}
+                                                                        size="xx-small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                            </template>
+                                                            <template if:true={contact.hasRisk}>
+                                                                <div class="node-risk-indicator" title="At Risk">!</div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Opportunities for this contact -->
+                                                    <template if:true={contact.isExpanded}>
+                                                        <div class="contact-opportunities">
+                                                            <template for:each={contact.opportunities} for:item="opp">
+                                                                <div key={opp.opportunityId} class="tree-opportunity">
+                                                                    <div class="opp-connector"></div>
+                                                                    <div class="tree-node node-opportunity"
+                                                                         data-opportunity-id={opp.opportunityId}
+                                                                         onclick={handleOpportunityClick}>
+                                                                        <lightning-icon icon-name="standard:opportunity" size="x-small"></lightning-icon>
+                                                                        <div class="node-content">
+                                                                            <span class="node-title">{opp.opportunityName}</span>
+                                                                            <span class="node-subtitle">{opp.stageName}</span>
+                                                                        </div>
+                                                                        <template if:true={opp.formattedAmount}>
+                                                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Decision Makers Branch -->
+                            <template if:true={hasDecisionMakers}>
+                                <div class="tree-branch branch-decision-makers">
+                                    <div class="branch-header" onclick={toggleDecisionMakers}>
+                                        <div class="tree-node node-category node-decision-makers">
+                                            <div class="node-icon">
+                                                <lightning-icon icon-name="utility:approval" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="node-content">
+                                                <span class="node-title">Decision Makers</span>
+                                                <span class="node-badge">{decisionMakerCount}</span>
+                                            </div>
+                                            <div class="node-expand">
+                                                <lightning-icon icon-name={decisionMakersExpandIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showDecisionMakers}>
+                                        <div class="branch-children">
+                                            <template for:each={decisionMakers} for:item="contact">
+                                                <div key={contact.contactId} class="tree-contact-group">
+                                                    <div class="tree-contact">
+                                                        <div class="contact-connector"></div>
+                                                        <div class="tree-node node-contact node-blue"
+                                                             data-contact-id={contact.contactId}
+                                                             onclick={handleContactClick}>
+                                                            <template if:true={contact.photoUrl}>
+                                                                <img src={contact.photoUrl} alt={contact.contactName} class="node-avatar-photo node-avatar-blue-border" />
+                                                            </template>
+                                                            <template if:false={contact.photoUrl}>
+                                                                <div class="node-avatar node-avatar-blue">{contact.initials}</div>
+                                                            </template>
+                                                            <div class="node-content">
+                                                                <span class="node-title">{contact.contactName}</span>
+                                                                <span class="node-subtitle">{contact.title}</span>
+                                                            </div>
+                                                            <template if:true={contact.hasOpportunities}>
+                                                                <div class="node-opp-toggle"
+                                                                     data-contact-id={contact.contactId}
+                                                                     onclick={toggleContactExpand}>
+                                                                    <span class="opp-count">{contact.opportunityCount}</span>
+                                                                    <lightning-icon
+                                                                        icon-name={contact.expandIcon}
+                                                                        size="xx-small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                            </template>
+                                                            <template if:true={contact.hasRisk}>
+                                                                <div class="node-risk-indicator" title="At Risk">!</div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <template if:true={contact.isExpanded}>
+                                                        <div class="contact-opportunities">
+                                                            <template for:each={contact.opportunities} for:item="opp">
+                                                                <div key={opp.opportunityId} class="tree-opportunity">
+                                                                    <div class="opp-connector"></div>
+                                                                    <div class="tree-node node-opportunity"
+                                                                         data-opportunity-id={opp.opportunityId}
+                                                                         onclick={handleOpportunityClick}>
+                                                                        <lightning-icon icon-name="standard:opportunity" size="x-small"></lightning-icon>
+                                                                        <div class="node-content">
+                                                                            <span class="node-title">{opp.opportunityName}</span>
+                                                                            <span class="node-subtitle">{opp.stageName}</span>
+                                                                        </div>
+                                                                        <template if:true={opp.formattedAmount}>
+                                                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Influencers Branch -->
+                            <template if:true={hasInfluencers}>
+                                <div class="tree-branch branch-influencers">
+                                    <div class="branch-header" onclick={toggleInfluencers}>
+                                        <div class="tree-node node-category node-influencers">
+                                            <div class="node-icon">
+                                                <lightning-icon icon-name="utility:broadcast" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="node-content">
+                                                <span class="node-title">Influencers</span>
+                                                <span class="node-badge">{influencerCount}</span>
+                                            </div>
+                                            <div class="node-expand">
+                                                <lightning-icon icon-name={influencersExpandIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showInfluencers}>
+                                        <div class="branch-children">
+                                            <template for:each={influencers} for:item="contact">
+                                                <div key={contact.contactId} class="tree-contact-group">
+                                                    <div class="tree-contact">
+                                                        <div class="contact-connector"></div>
+                                                        <div class="tree-node node-contact node-orange"
+                                                             data-contact-id={contact.contactId}
+                                                             onclick={handleContactClick}>
+                                                            <template if:true={contact.photoUrl}>
+                                                                <img src={contact.photoUrl} alt={contact.contactName} class="node-avatar-photo node-avatar-orange-border" />
+                                                            </template>
+                                                            <template if:false={contact.photoUrl}>
+                                                                <div class="node-avatar node-avatar-orange">{contact.initials}</div>
+                                                            </template>
+                                                            <div class="node-content">
+                                                                <span class="node-title">{contact.contactName}</span>
+                                                                <span class="node-subtitle">{contact.title}</span>
+                                                            </div>
+                                                            <template if:true={contact.hasOpportunities}>
+                                                                <div class="node-opp-toggle"
+                                                                     data-contact-id={contact.contactId}
+                                                                     onclick={toggleContactExpand}>
+                                                                    <span class="opp-count">{contact.opportunityCount}</span>
+                                                                    <lightning-icon
+                                                                        icon-name={contact.expandIcon}
+                                                                        size="xx-small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                            </template>
+                                                            <template if:true={contact.hasRisk}>
+                                                                <div class="node-risk-indicator" title="At Risk">!</div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <template if:true={contact.isExpanded}>
+                                                        <div class="contact-opportunities">
+                                                            <template for:each={contact.opportunities} for:item="opp">
+                                                                <div key={opp.opportunityId} class="tree-opportunity">
+                                                                    <div class="opp-connector"></div>
+                                                                    <div class="tree-node node-opportunity"
+                                                                         data-opportunity-id={opp.opportunityId}
+                                                                         onclick={handleOpportunityClick}>
+                                                                        <lightning-icon icon-name="standard:opportunity" size="x-small"></lightning-icon>
+                                                                        <div class="node-content">
+                                                                            <span class="node-title">{opp.opportunityName}</span>
+                                                                            <span class="node-subtitle">{opp.stageName}</span>
+                                                                        </div>
+                                                                        <template if:true={opp.formattedAmount}>
+                                                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Blockers Branch -->
+                            <template if:true={hasBlockers}>
+                                <div class="tree-branch branch-blockers">
+                                    <div class="branch-header" onclick={toggleBlockers}>
+                                        <div class="tree-node node-category node-blockers">
+                                            <div class="node-icon">
+                                                <lightning-icon icon-name="utility:ban" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="node-content">
+                                                <span class="node-title">Blockers</span>
+                                                <span class="node-badge">{blockerCount}</span>
+                                            </div>
+                                            <div class="node-expand">
+                                                <lightning-icon icon-name={blockersExpandIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showBlockers}>
+                                        <div class="branch-children">
+                                            <template for:each={blockers} for:item="contact">
+                                                <div key={contact.contactId} class="tree-contact-group">
+                                                    <div class="tree-contact">
+                                                        <div class="contact-connector"></div>
+                                                        <div class="tree-node node-contact node-negative"
+                                                             data-contact-id={contact.contactId}
+                                                             onclick={handleContactClick}>
+                                                            <template if:true={contact.photoUrl}>
+                                                                <img src={contact.photoUrl} alt={contact.contactName} class="node-avatar-photo node-avatar-red-border" />
+                                                            </template>
+                                                            <template if:false={contact.photoUrl}>
+                                                                <div class="node-avatar node-avatar-red">{contact.initials}</div>
+                                                            </template>
+                                                            <div class="node-content">
+                                                                <span class="node-title">{contact.contactName}</span>
+                                                                <span class="node-subtitle">{contact.title}</span>
+                                                            </div>
+                                                            <template if:true={contact.hasOpportunities}>
+                                                                <div class="node-opp-toggle"
+                                                                     data-contact-id={contact.contactId}
+                                                                     onclick={toggleContactExpand}>
+                                                                    <span class="opp-count">{contact.opportunityCount}</span>
+                                                                    <lightning-icon
+                                                                        icon-name={contact.expandIcon}
+                                                                        size="xx-small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                            </template>
+                                                            <template if:true={contact.hasRisk}>
+                                                                <div class="node-risk-indicator" title="At Risk">!</div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <template if:true={contact.isExpanded}>
+                                                        <div class="contact-opportunities">
+                                                            <template for:each={contact.opportunities} for:item="opp">
+                                                                <div key={opp.opportunityId} class="tree-opportunity">
+                                                                    <div class="opp-connector"></div>
+                                                                    <div class="tree-node node-opportunity"
+                                                                         data-opportunity-id={opp.opportunityId}
+                                                                         onclick={handleOpportunityClick}>
+                                                                        <lightning-icon icon-name="standard:opportunity" size="x-small"></lightning-icon>
+                                                                        <div class="node-content">
+                                                                            <span class="node-title">{opp.opportunityName}</span>
+                                                                            <span class="node-subtitle">{opp.stageName}</span>
+                                                                        </div>
+                                                                        <template if:true={opp.formattedAmount}>
+                                                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Others Branch -->
+                            <template if:true={hasOthers}>
+                                <div class="tree-branch branch-others">
+                                    <div class="branch-header" onclick={toggleOthers}>
+                                        <div class="tree-node node-category node-others">
+                                            <div class="node-icon">
+                                                <lightning-icon icon-name="utility:people" size="small"></lightning-icon>
+                                            </div>
+                                            <div class="node-content">
+                                                <span class="node-title">Others</span>
+                                                <span class="node-badge">{otherCount}</span>
+                                            </div>
+                                            <div class="node-expand">
+                                                <lightning-icon icon-name={othersExpandIcon} size="x-small"></lightning-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <template if:true={showOthers}>
+                                        <div class="branch-children">
+                                            <template for:each={others} for:item="contact">
+                                                <div key={contact.contactId} class="tree-contact-group">
+                                                    <div class="tree-contact">
+                                                        <div class="contact-connector"></div>
+                                                        <div class="tree-node node-contact node-gray"
+                                                             data-contact-id={contact.contactId}
+                                                             onclick={handleContactClick}>
+                                                            <div class="node-avatar">{contact.initials}</div>
+                                                            <div class="node-content">
+                                                                <span class="node-title">{contact.contactName}</span>
+                                                                <span class="node-subtitle">{contact.title}</span>
+                                                            </div>
+                                                            <template if:true={contact.hasOpportunities}>
+                                                                <div class="node-opp-toggle"
+                                                                     data-contact-id={contact.contactId}
+                                                                     onclick={toggleContactExpand}>
+                                                                    <span class="opp-count">{contact.opportunityCount}</span>
+                                                                    <lightning-icon
+                                                                        icon-name={contact.expandIcon}
+                                                                        size="xx-small">
+                                                                    </lightning-icon>
+                                                                </div>
+                                                            </template>
+                                                            <template if:true={contact.hasRisk}>
+                                                                <div class="node-risk-indicator" title="At Risk">!</div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                    <template if:true={contact.isExpanded}>
+                                                        <div class="contact-opportunities">
+                                                            <template for:each={contact.opportunities} for:item="opp">
+                                                                <div key={opp.opportunityId} class="tree-opportunity">
+                                                                    <div class="opp-connector"></div>
+                                                                    <div class="tree-node node-opportunity"
+                                                                         data-opportunity-id={opp.opportunityId}
+                                                                         onclick={handleOpportunityClick}>
+                                                                        <lightning-icon icon-name="standard:opportunity" size="x-small"></lightning-icon>
+                                                                        <div class="node-content">
+                                                                            <span class="node-title">{opp.opportunityName}</span>
+                                                                            <span class="node-subtitle">{opp.stageName}</span>
+                                                                        </div>
+                                                                        <template if:true={opp.formattedAmount}>
+                                                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="tree-legend">
+                        <div class="legend-item">
+                            <div class="legend-color legend-champions"></div>
+                            <span>Champions</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-decision-makers"></div>
+                            <span>Decision Makers</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-influencers"></div>
+                            <span>Influencers</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-blockers"></div>
+                            <span>Blockers</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color legend-opportunity"></div>
+                            <span>Opportunities</span>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Empty State -->
+                <template if:true={showEmptyState}>
+                    <div class="tree-empty">
+                        <div class="slds-illustration slds-illustration_small">
+                            <lightning-icon icon-name="utility:hierarchy" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                            <p class="slds-text-body_regular">No stakeholders found for this account.</p>
+                            <p class="slds-text-body_small slds-text-color_weak">Add stakeholders to see the tree visualization.</p>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

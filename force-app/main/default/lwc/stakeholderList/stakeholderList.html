@@ -1,0 +1,174 @@
+<template>
+    <lightning-card title="Stakeholder List" icon-name="standard:people">
+        <!-- Header with filters and actions -->
+        <div slot="actions">
+            <lightning-button
+                label="New Stakeholder"
+                icon-name="utility:add"
+                onclick={handleNewStakeholder}>
+            </lightning-button>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <!-- Filters Section -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium filter-section">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-12">
+                    <lightning-input
+                        type="search"
+                        label="Search"
+                        placeholder="Search by name or title..."
+                        value={searchTerm}
+                        onchange={handleSearch}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox
+                        label="Role"
+                        value={selectedRole}
+                        options={roleOptions}
+                        onchange={handleRoleFilter}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox
+                        label="Sentiment"
+                        value={selectedSentiment}
+                        options={sentimentOptions}
+                        onchange={handleSentimentFilter}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox
+                        label="Influence"
+                        value={selectedInfluence}
+                        options={influenceOptions}
+                        onchange={handleInfluenceFilter}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                    <lightning-combobox
+                        label="Risk"
+                        value={selectedRisk}
+                        options={riskOptions}
+                        onchange={handleRiskFilter}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-12 slds-grid slds-align-bottom">
+                    <lightning-button-icon
+                        icon-name="utility:filterList"
+                        variant="border-filled"
+                        alternative-text="Clear Filters"
+                        title="Clear Filters"
+                        onclick={handleClearFilters}>
+                    </lightning-button-icon>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stat-card">
+                        <span class="stat-value">{totalCount}</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stat-card stat-champion">
+                        <span class="stat-value">{championCount}</span>
+                        <span class="stat-label">Champions</span>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stat-card stat-blocker">
+                        <span class="stat-value">{blockerCount}</span>
+                        <span class="stat-label">Blockers</span>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <div class="stat-card stat-risk">
+                        <span class="stat-value">{riskCount}</span>
+                        <span class="stat-label">At Risk</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-is-relative loading-container">
+                    <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={hasError}>
+                <div class="error-state">
+                    <lightning-icon icon-name="utility:error" size="small" variant="error"></lightning-icon>
+                    <p class="error-text">{error}</p>
+                </div>
+            </template>
+
+            <!-- Data Table -->
+            <template if:false={isLoading}>
+                <template if:true={hasStakeholders}>
+                    <lightning-datatable
+                        key-field="id"
+                        data={filteredStakeholders}
+                        columns={columns}
+                        sorted-by={sortedBy}
+                        sorted-direction={sortedDirection}
+                        onsort={handleSort}
+                        onrowaction={handleRowAction}
+                        hide-checkbox-column
+                        show-row-number-column>
+                    </lightning-datatable>
+                </template>
+                <template if:false={hasStakeholders}>
+                    <div class="slds-illustration slds-illustration_small slds-p-around_large">
+                        <div class="slds-text-color_weak slds-text-align_center">
+                            <p class="slds-text-body_regular slds-text-color_weak">No stakeholders found matching the current filters.</p>
+                            <lightning-button
+                                label="Add First Stakeholder"
+                                variant="brand"
+                                class="slds-m-top_medium"
+                                onclick={handleNewStakeholder}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Stakeholder Edit Modal -->
+    <template if:true={showEditModal}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-modal="true"
+            aria-labelledby="modal-heading"
+            class="slds-modal slds-fade-in-open slds-modal_medium"
+            onkeydown={handleModalKeyDown}>
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button
+                        class="slds-button slds-button_icon slds-modal__close"
+                        title="Close"
+                        onclick={handleCloseModal}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">{modalTitle}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content">
+                    <c-stakeholder-form
+                        stakeholder-id={editStakeholderId}
+                        account-id={recordId}
+                        onsave={handleStakeholderSaved}
+                        oncancel={handleCloseModal}>
+                    </c-stakeholder-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onclick={handleBackdropClick}></div>
+    </template>
+</template>

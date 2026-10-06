@@ -1,0 +1,78 @@
+/* Design Tokens for Stakeholder Org Chart */
+
+/* Color Palette */
+:host {
+    /* Primary Colors */
+    --soc-primary: #0176d3;
+    --soc-primary-hover: #014486;
+    --soc-primary-light: #e5f2fd;
+
+    /* Sentiment Colors */
+    --soc-champion: #2e844a;
+    --soc-champion-bg: #cdefc4;
+    --soc-neutral: #747474;
+    --soc-neutral-bg: #f3f3f3;
+    --soc-detractor: #ba0517;
+    --soc-detractor-bg: #feded8;
+
+    /* Power/Influence Colors */
+    --soc-power-high: #ba0517;
+    --soc-power-high-bg: #feded8;
+    --soc-power-medium: #fe5c02;
+    --soc-power-medium-bg: #ffddca;
+    --soc-power-low: #0176d3;
+    --soc-power-low-bg: #e5f2fd;
+
+    /* Node Colors */
+    --soc-node-bg: #ffffff;
+    --soc-node-border: #e5e5e5;
+    --soc-node-shadow: rgba(0, 0, 0, 0.1);
+    --soc-node-hover-shadow: rgba(0, 0, 0, 0.15);
+
+    /* Canvas */
+    --soc-canvas-bg: #f4f6f9;
+    --soc-canvas-grid: #e5e5e5;
+
+    /* Link Colors */
+    --soc-link-default: #b0c4de;
+    --soc-link-reports-to: #2e844a;
+    --soc-link-influence: #0176d3;
+
+    /* Text Colors */
+    --soc-text-primary: #181818;
+    --soc-text-secondary: #706e6b;
+    --soc-text-tertiary: #969492;
+    --soc-text-inverse: #ffffff;
+
+    /* Spacing */
+    --soc-spacing-xs: 4px;
+    --soc-spacing-sm: 8px;
+    --soc-spacing-md: 12px;
+    --soc-spacing-lg: 16px;
+    --soc-spacing-xl: 24px;
+
+    /* Border Radius */
+    --soc-radius-sm: 4px;
+    --soc-radius-md: 8px;
+    --soc-radius-lg: 12px;
+    --soc-radius-full: 50%;
+
+    /* Typography */
+    --soc-font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --soc-font-size-xs: 10px;
+    --soc-font-size-sm: 11px;
+    --soc-font-size-md: 13px;
+    --soc-font-size-lg: 15px;
+    --soc-font-weight-normal: 400;
+    --soc-font-weight-medium: 500;
+    --soc-font-weight-bold: 700;
+
+    /* Node Dimensions */
+    --soc-node-width: 200px;
+    --soc-node-height: 80px;
+    --soc-node-avatar: 40px;
+
+    /* Transitions */
+    --soc-transition-fast: 150ms ease;
+    --soc-transition-normal: 250ms ease;
+}

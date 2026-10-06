@@ -1,0 +1,131 @@
+<template>
+    <div class="slds-p-around_medium">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <lightning-record-edit-form
+                object-api-name="Stakeholder360__Stakeholder__c"
+                record-id={stakeholderId}
+                onsuccess={handleSuccess}
+                onerror={handleError}
+                onsubmit={handleSubmit}>
+
+                <lightning-messages></lightning-messages>
+
+                <!-- Form-level error banner -->
+                <template if:true={hasError}>
+                    <div class="form-error-banner">
+                        <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                        <span>{errorMessage}</span>
+                    </div>
+                </template>
+
+                <!-- Contact Selection (for new stakeholders) -->
+                <template if:false={stakeholderId}>
+                    <div class="slds-form-element slds-m-bottom_medium">
+                        <lightning-input-field field-name="Stakeholder360__Contact__c" required></lightning-input-field>
+                    </div>
+                </template>
+
+                <!-- Account (hidden, auto-filled) -->
+                <template if:true={accountId}>
+                    <lightning-input-field field-name="Stakeholder360__Account__c" value={accountId} class="slds-hide"></lightning-input-field>
+                </template>
+
+                <!-- Role & Influence Section -->
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_shade">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Role & Influence">Role & Influence</span>
+                    </h3>
+                    <div class="slds-section__content">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Role__c" required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Influence_Level__c" required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Decision_Power__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Is_Primary_Stakeholder__c"></lightning-input-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentiment & Engagement Section -->
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_shade">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Sentiment & Engagement">Sentiment & Engagement</span>
+                    </h3>
+                    <div class="slds-section__content">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Sentiment__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Engagement_Level__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <lightning-input-field field-name="Stakeholder360__Last_Engagement_Date__c"></lightning-input-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes Section -->
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_shade">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Notes">Notes</span>
+                    </h3>
+                    <div class="slds-section__content">
+                        <lightning-input-field field-name="Stakeholder360__Notes__c"></lightning-input-field>
+                    </div>
+                </div>
+
+                <!-- Read-only Calculated Fields (for existing records) -->
+                <template if:true={stakeholderId}>
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Calculated Fields">Calculated Metrics</span>
+                        </h3>
+                        <div class="slds-section__content">
+                            <div class="slds-grid slds-wrap slds-gutters">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                    <lightning-output-field field-name="Stakeholder360__Priority_Score__c"></lightning-output-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                    <lightning-output-field field-name="Stakeholder360__Days_Since_Last_Engagement__c"></lightning-output-field>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                                    <lightning-output-field field-name="Stakeholder360__Risk_Flag__c"></lightning-output-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Form Actions -->
+                <div class="slds-m-top_large slds-clearfix">
+                    <div class="slds-float_right">
+                        <lightning-button
+                            label="Cancel"
+                            variant="neutral"
+                            class="slds-m-right_x-small"
+                            onclick={handleCancel}>
+                        </lightning-button>
+                        <lightning-button
+                            type="submit"
+                            label={submitButtonLabel}
+                            variant="brand">
+                        </lightning-button>
+                    </div>
+                </div>
+            </lightning-record-edit-form>
+        </template>
+    </div>
+</template>

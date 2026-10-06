@@ -1,0 +1,203 @@
+<template>
+    <lightning-card title="Account Stakeholder Summary" icon-name="standard:account">
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasSummary}>
+                <div class="slds-p-around_medium">
+                    <!-- Account Info Header -->
+                    <template if:true={hasAccountInfo}>
+                        <div class="account-info-header slds-m-bottom_medium">
+                            <div class="account-main-info">
+                                <div class="account-name-row">
+                                    <h2 class="account-name">{summary.accountInfo.name}</h2>
+                                    <template if:true={summary.accountInfo.rating}>
+                                        <span class={ratingBadgeClass}>{summary.accountInfo.rating}</span>
+                                    </template>
+                                    <template if:true={summary.accountInfo.accountType}>
+                                        <span class="type-badge">{summary.accountInfo.accountType}</span>
+                                    </template>
+                                </div>
+                                <div class="account-details-row">
+                                    <template if:true={summary.accountInfo.industry}>
+                                        <span class="account-detail">
+                                            <lightning-icon icon-name="utility:company" size="xx-small"></lightning-icon>
+                                            {summary.accountInfo.industry}
+                                        </span>
+                                    </template>
+                                    <template if:true={formattedLocation}>
+                                        <span class="account-detail">
+                                            <lightning-icon icon-name="utility:location" size="xx-small"></lightning-icon>
+                                            {formattedLocation}
+                                        </span>
+                                    </template>
+                                    <template if:true={summary.accountInfo.ownerName}>
+                                        <span class="account-detail">
+                                            <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                            {summary.accountInfo.ownerName}
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="account-metrics-row">
+                                <template if:true={formattedAnnualRevenue}>
+                                    <div class="account-metric">
+                                        <span class="metric-value-small">{formattedAnnualRevenue}</span>
+                                        <span class="metric-label-small">Annual Revenue</span>
+                                    </div>
+                                </template>
+                                <template if:true={summary.accountInfo.numberOfEmployees}>
+                                    <div class="account-metric">
+                                        <span class="metric-value-small">{formattedEmployees}</span>
+                                        <span class="metric-label-small">Employees</span>
+                                    </div>
+                                </template>
+                                <template if:true={formattedTenure}>
+                                    <div class="account-metric">
+                                        <span class="metric-value-small">{formattedTenure}</span>
+                                        <span class="metric-label-small">Customer Tenure</span>
+                                    </div>
+                                </template>
+                                <template if:true={formattedLastActivity}>
+                                    <div class="account-metric">
+                                        <span class={lastActivityClass}>{formattedLastActivity}</span>
+                                        <span class="metric-label-small">Last Activity</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Health Score -->
+                    <div class={healthScoreClass}>
+                        <div class="health-score">
+                            <div class="health-value">{summary.healthScore}</div>
+                            <div class="health-label">Health Score</div>
+                            <div class="health-status-label">{healthStatus}</div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics Grid -->
+                    <div class="slds-grid slds-gutters slds-wrap slds-m-top_large">
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:contact" size="small"></lightning-icon>
+                                <div class="metric-value">{summary.totalContacts}</div>
+                                <div class="metric-label">Total Contacts</div>
+                                <div class="metric-sublabel">{summary.activeContacts} active</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:opportunity" size="small"></lightning-icon>
+                                <div class="metric-value">{summary.totalOpportunities}</div>
+                                <div class="metric-label">Opportunities</div>
+                                <div class="metric-sublabel">{summary.openOpportunities} open</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:currency" size="small"></lightning-icon>
+                                <div class="metric-value-currency">{formattedTotalValue}</div>
+                                <div class="metric-label">Pipeline Value</div>
+                                <div class="metric-sublabel">{summary.wonOpportunities} won</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:relationship" size="small"></lightning-icon>
+                                <div class="strength-stars">
+                                    <template for:each={strengthStars} for:item="star">
+                                        <lightning-icon
+                                            key={star.id}
+                                            icon-name={star.iconName}
+                                            size="x-small"
+                                            class={star.cssClass}>
+                                        </lightning-icon>
+                                    </template>
+                                </div>
+                                <div class="metric-label">Avg. Relationship</div>
+                                <div class="metric-sublabel">{summary.averageRelationshipStrength}/5</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Distribution -->
+                    <template if:true={hasRoleDistribution}>
+                        <div class="slds-m-top_large">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Stakeholder Roles</h3>
+                            <div class="role-list">
+                                <template for:each={topRoles} for:item="role">
+                                    <div key={role.role} class="role-item">
+                                        <span class="role-name">{role.role}</span>
+                                        <span class="role-count">{role.count}</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Key Contacts -->
+                    <template if:true={hasContacts}>
+                        <div class="slds-m-top_large">
+                            <div class="section-header">
+                                <h3 class="slds-text-heading_small">Key Contacts</h3>
+                                <template if:true={showMoreButton}>
+                                    <lightning-button
+                                        label={showMoreLabel}
+                                        variant="base"
+                                        onclick={handleToggleContacts}>
+                                    </lightning-button>
+                                </template>
+                            </div>
+
+                            <div class="contact-list">
+                                <template for:each={displayedContacts} for:item="contact">
+                                    <div key={contact.id} class="contact-card" data-contact-id={contact.id} onclick={handleContactClick}>
+                                        <div class="contact-header">
+                                            <lightning-icon icon-name="standard:contact" size="small"></lightning-icon>
+                                            <div class="contact-info">
+                                                <div class="contact-name">{contact.name}</div>
+                                                <div class="contact-title">{contact.title}</div>
+                                            </div>
+                                            <template if:true={contact.isActive}>
+                                                <span class="active-badge">Active</span>
+                                            </template>
+                                        </div>
+                                        <div class="contact-details">
+                                            <template if:true={contact.email}>
+                                                <div class="detail-item">
+                                                    <lightning-icon icon-name="utility:email" size="xx-small"></lightning-icon>
+                                                    <span>{contact.email}</span>
+                                                </div>
+                                            </template>
+                                            <template if:true={contact.phone}>
+                                                <div class="detail-item">
+                                                    <lightning-icon icon-name="utility:phone" size="xx-small"></lightning-icon>
+                                                    <span>{contact.phone}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasSummary}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">No stakeholder data available for this account.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alert_Type__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Type of coverage gap alert</description>
+    <label>Alert Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Missing Champion</fullName>
+                <default>false</default>
+                <label>Missing Champion</label>
+            </value>
+            <value>
+                <fullName>Missing Decision Maker</fullName>
+                <default>false</default>
+                <label>Missing Decision Maker</label>
+            </value>
+            <value>
+                <fullName>Missing Budget Holder</fullName>
+                <default>false</default>
+                <label>Missing Budget Holder</label>
+            </value>
+            <value>
+                <fullName>Inactive Stakeholder</fullName>
+                <default>false</default>
+                <label>Inactive Stakeholder</label>
+            </value>
+            <value>
+                <fullName>Single-Threaded</fullName>
+                <default>false</default>
+                <label>Single-Threaded</label>
+            </value>
+            <value>
+                <fullName>Cold Stakeholder</fullName>
+                <default>false</default>
+                <label>Cold Stakeholder</label>
+            </value>
+            <value>
+                <fullName>Missing Executive</fullName>
+                <default>false</default>
+                <label>Missing Executive</label>
+            </value>
+            <value>
+                <fullName>Blocker Risk</fullName>
+                <default>false</default>
+                <label>Blocker Risk</label>
+            </value>
+            <value>
+                <fullName>No Budget Holder</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>No Budget Holder</label>
+            </value>
+            <value>
+                <fullName>No Champion</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>No Champion</label>
+            </value>
+            <value>
+                <fullName>No Decision Maker</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>No Decision Maker</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

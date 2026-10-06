@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Engagement_Date__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Most recent activity, meeting, or touchpoint with this contact</description>
+    <label>Last Engagement Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Date</type>
+</CustomField>

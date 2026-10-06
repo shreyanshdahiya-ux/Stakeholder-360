@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stakeholder__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <description>Optional link to the Stakeholder record for additional intelligence</description>
+    <label>Stakeholder</label>
+    <referenceTo>Stakeholder__c</referenceTo>
+    <relationshipLabel>Opportunity Stakeholders</relationshipLabel>
+    <relationshipName>Opportunity_Stakeholders</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

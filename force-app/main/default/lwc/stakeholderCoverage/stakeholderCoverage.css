@@ -1,0 +1,332 @@
+/* Coverage Card */
+.coverage-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+/* Header */
+.coverage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #0176d3 0%, #1b96ff 100%);
+    color: white;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-icon {
+    font-size: 20px;
+}
+
+.header-title h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* Status Pill */
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-excellent {
+    background: rgba(46, 132, 74, 0.2);
+    color: #cdefc4;
+}
+
+.status-good {
+    background: rgba(1, 118, 211, 0.2);
+    color: #e5f2fd;
+}
+
+.status-fair {
+    background: rgba(254, 92, 2, 0.2);
+    color: #ffddca;
+}
+
+.status-critical {
+    background: rgba(186, 5, 23, 0.2);
+    color: #feded8;
+}
+
+/* Main Section */
+.main-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px;
+    background: #f8fafc;
+}
+
+.coverage-ring-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 20px;
+}
+
+.coverage-ring {
+    width: 100%;
+    height: 100%;
+}
+
+.ring-bg {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 8;
+}
+
+.ring-progress,
+.ring-excellent,
+.ring-good,
+.ring-fair,
+.ring-critical {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 339.292;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.ring-excellent {
+    stroke: #2e844a;
+}
+
+.ring-good {
+    stroke: #0176d3;
+}
+
+.ring-fair {
+    stroke: #fe5c02;
+}
+
+.ring-critical {
+    stroke: #ba0517;
+}
+
+.ring-value-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.ring-value {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: #181818;
+    line-height: 1;
+}
+
+.ring-label {
+    display: block;
+    font-size: 12px;
+    color: #706e6b;
+    margin-top: 4px;
+}
+
+/* Coverage Stats */
+.coverage-stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 24px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #181818;
+    line-height: 1;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #706e6b;
+    margin-top: 4px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: #e5e5e5;
+}
+
+/* Section Title */
+.section-title {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #706e6b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Roles Section */
+.roles-section {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.role-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.role-covered {
+    background: #cdefc4;
+}
+
+.role-missing {
+    background: #feded8;
+}
+
+.role-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.role-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: #181818;
+}
+
+/* Blocker Warning */
+.blocker-warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #fff3cd;
+    border-left: 4px solid #fe5c02;
+}
+
+.warning-icon {
+    font-size: 16px;
+}
+
+.warning-text {
+    font-size: 13px;
+    color: #856404;
+    font-weight: 500;
+}
+
+/* Missing Section */
+.missing-section {
+    padding: 20px;
+}
+
+.missing-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.missing-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #ba0517;
+}
+
+.missing-item:last-child {
+    margin-bottom: 0;
+}
+
+.missing-icon {
+    font-size: 12px;
+    color: #ba0517;
+}
+
+.missing-text {
+    font-size: 13px;
+    color: #181818;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-text {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #181818;
+}
+
+.empty-subtext {
+    margin: 0;
+    font-size: 13px;
+    color: #706e6b;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .roles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .coverage-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

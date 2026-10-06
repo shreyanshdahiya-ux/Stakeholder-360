@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Layout_Type__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Type of layout algorithm used</description>
+    <label>Layout Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Hierarchy</fullName>
+                <default>true</default>
+                <label>Hierarchy</label>
+            </value>
+            <value>
+                <fullName>Force Directed</fullName>
+                <default>false</default>
+                <label>Force Directed</label>
+            </value>
+            <value>
+                <fullName>Manual</fullName>
+                <default>false</default>
+                <label>Manual</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

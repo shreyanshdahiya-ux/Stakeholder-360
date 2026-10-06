@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Contact__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Account__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Role__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Influence_Level__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Decision_Power__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Sentiment__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Engagement_Level__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Priority_Score__c</field>
+    </columns>
+    <columns>
+        <field>Stakeholder__c.Risk_Flag__c</field>
+    </columns>
+    <description>All stakeholders across all accounts</description>
+    <format>Tabular</format>
+    <name>All Stakeholders</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Stakeholder__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <sortColumn>Stakeholder__c.Priority_Score__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

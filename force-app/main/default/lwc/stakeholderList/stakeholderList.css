@@ -1,0 +1,136 @@
+.filter-section {
+    background: #f3f3f3;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #181818;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #706e6b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-champion {
+    border-left: 4px solid #2e844a;
+}
+
+.stat-champion .stat-value {
+    color: #2e844a;
+}
+
+.stat-blocker {
+    border-left: 4px solid #ba0517;
+}
+
+.stat-blocker .stat-value {
+    color: #ba0517;
+}
+
+.stat-risk {
+    border-left: 4px solid #fe5c02;
+}
+
+.stat-risk .stat-value {
+    color: #fe5c02;
+}
+
+.loading-container {
+    min-height: 200px;
+}
+
+.error-state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: #fef2f2;
+    border-left: 4px solid #ba0517;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.error-text {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ba0517;
+}
+
+/* Modal styles */
+.slds-modal {
+    position: fixed;
+    z-index: 9002;
+}
+
+.slds-modal__container {
+    position: relative;
+    max-width: 768px;
+    margin: 0 auto;
+}
+
+.slds-modal__header {
+    position: relative;
+    padding: 1rem 1rem 1rem 1.5rem;
+    background: #f3f3f3;
+    border-bottom: 1px solid #dddbda;
+    border-radius: 4px 4px 0 0;
+}
+
+.slds-modal__content {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.slds-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9001;
+    background-color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+}
+
+.slds-modal__close {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+/* Badge styles for datatable */
+:host ::deep .slds-text-color_success {
+    color: #2e844a !important;
+    font-weight: 600;
+}
+
+:host ::deep .slds-text-color_error {
+    color: #ba0517 !important;
+    font-weight: 600;
+}
+
+:host ::deep .slds-text-color_warning {
+    color: #fe5c02 !important;
+    font-weight: 600;
+}

@@ -1,0 +1,195 @@
+<template>
+    <lightning-card title="Stakeholder Profile" icon-name="standard:contact">
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasError}>
+                <div class="profile-error">
+                    <lightning-icon icon-name="utility:error" size="small" variant="error"></lightning-icon>
+                    <p class="profile-error-text">{errorMessage}</p>
+                </div>
+            </template>
+
+            <template if:true={hasProfile}>
+                <div class="slds-p-around_medium">
+                    <!-- Engagement Score Header -->
+                    <div class="profile-header">
+                        <div class={engagementScoreClass}>
+                            <div class="score-value">{profile.engagementScore}</div>
+                            <div class="score-label">Engagement Score</div>
+                            <div class="engagement-level">{engagementLevel}</div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="slds-grid slds-gutters slds-wrap slds-m-top_large">
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:opportunity" size="small"></lightning-icon>
+                                <div class="metric-value">{profile.totalOpportunities}</div>
+                                <div class="metric-label">Opportunities</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:account" size="small"></lightning-icon>
+                                <div class="metric-value">{profile.primaryOpportunities}</div>
+                                <div class="metric-label">Primary Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:relationship" size="small"></lightning-icon>
+                                <div class="strength-stars">
+                                    <template for:each={strengthStars} for:item="star">
+                                        <lightning-icon
+                                            key={star.id}
+                                            icon-name={star.iconName}
+                                            class={star.cssClass}
+                                            size="x-small">
+                                        </lightning-icon>
+                                    </template>
+                                </div>
+                                <div class="metric-label">Relationship</div>
+                            </div>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                            <div class="metric-card">
+                                <lightning-icon icon-name="standard:task" size="small"></lightning-icon>
+                                <div class="metric-sublabel">{formattedLastActivity}</div>
+                                <div class="metric-label">Last Activity</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="slds-m-top_large">
+                        <h3 class="slds-text-heading_small slds-m-bottom_small">Contact Information</h3>
+                        <div class="info-grid">
+                            <template if:true={profile.accountName}>
+                                <div class="info-item" onclick={handleAccountClick}>
+                                    <span class="info-label">Account:</span>
+                                    <span class="info-value link">{profile.accountName}</span>
+                                </div>
+                            </template>
+                            <template if:true={profile.title}>
+                                <div class="info-item">
+                                    <span class="info-label">Title:</span>
+                                    <span class="info-value">{profile.title}</span>
+                                </div>
+                            </template>
+                            <template if:true={profile.email}>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value">{profile.email}</span>
+                                </div>
+                            </template>
+                            <template if:true={profile.phone}>
+                                <div class="info-item">
+                                    <span class="info-label">Phone:</span>
+                                    <span class="info-value">{profile.phone}</span>
+                                </div>
+                            </template>
+                            <template if:true={profile.reportsToName}>
+                                <div class="info-item">
+                                    <span class="info-label">Reports To:</span>
+                                    <span class="info-value">{profile.reportsToName}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Opportunities -->
+                    <template if:true={hasOpportunities}>
+                        <div class="slds-m-top_large">
+                            <div class="section-header">
+                                <h3 class="slds-text-heading_small">Opportunities</h3>
+                                <template if:true={showToggleButton}>
+                                    <lightning-button
+                                        label={toggleButtonLabel}
+                                        variant="base"
+                                        onclick={handleToggleOpportunities}>
+                                    </lightning-button>
+                                </template>
+                            </div>
+
+                            <div class="opportunity-list">
+                                <template for:each={displayedOpportunities} for:item="opp">
+                                    <div key={opp.id} class="opportunity-card" data-opp-id={opp.id} onclick={handleOpportunityClick}>
+                                        <div class="opp-header">
+                                            <div class="opp-info">
+                                                <div class="opp-name">{opp.name}</div>
+                                                <div class="opp-role">
+                                                    {opp.role}
+                                                    <template if:true={opp.isPrimary}>
+                                                        <span class="primary-badge">Primary</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="opp-details">
+                                            <span class="opp-stage">{opp.stage}</span>
+                                            <span class="opp-amount">{opp.formattedAmount}</span>
+                                            <span class="opp-date">{opp.formattedCloseDate}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Direct Reports -->
+                    <template if:true={hasDirectReports}>
+                        <div class="slds-m-top_large">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Direct Reports</h3>
+                            <div class="report-list">
+                                <template for:each={profile.directReports} for:item="report">
+                                    <div key={report.id} class="report-item" data-contact-id={report.id} onclick={handleContactClick}>
+                                        <lightning-icon icon-name="standard:contact" size="small"></lightning-icon>
+                                        <div class="report-info">
+                                            <div class="report-name">{report.name}</div>
+                                            <div class="report-title">{report.title}</div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Recent Activities -->
+                    <template if:true={hasRecentActivities}>
+                        <div class="slds-m-top_large">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Recent Activities</h3>
+                            <div class="activity-list">
+                                <template for:each={profile.recentActivities} for:item="activity">
+                                    <div key={activity.id} class="activity-item">
+                                        <lightning-icon icon-name="standard:task" size="small"></lightning-icon>
+                                        <div class="activity-info">
+                                            <div class="activity-subject">{activity.subject}</div>
+                                            <div class="activity-meta">
+                                                {activity.status} - {activity.activityDate}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasProfile}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-color_weak">Unable to load contact profile.</p>
+                </div>
+            </template>
+        </template>
+    </lightning-card>
+</template>

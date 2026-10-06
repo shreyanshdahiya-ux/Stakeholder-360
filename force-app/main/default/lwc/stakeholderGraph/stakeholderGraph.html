@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Relationship Graph" icon-name="utility:flow">
+        <div slot="actions">
+            <lightning-button-group>
+                <lightning-button-icon icon-name="utility:zoomin"   alternative-text="Zoom In"    title="Zoom In"    onclick={handleZoomIn}></lightning-button-icon>
+                <lightning-button-icon icon-name="utility:zoomout"  alternative-text="Zoom Out"   title="Zoom Out"   onclick={handleZoomOut}></lightning-button-icon>
+                <lightning-button-icon icon-name="utility:home"     alternative-text="Reset Zoom" title="Reset Zoom" onclick={handleZoomReset}></lightning-button-icon>
+                <lightning-button label="Expand All"   icon-name="utility:expand_all"   onclick={handleExpandAll}   variant="neutral"></lightning-button>
+                <lightning-button label="Collapse All" icon-name="utility:collapse_all" onclick={handleCollapseAll} variant="neutral"></lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <template if:true={isLoading}>
+                <div class="graph-loading">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={isLoading}>
+                <template if:true={hasData}>
+                    <div class="jsmind-wrapper">
+                        <div class="jsmind-container"></div>
+                    </div>
+                </template>
+
+                <template if:false={hasData}>
+                    <div class="graph-empty">
+                        <div class="slds-illustration slds-illustration_small">
+                            <lightning-icon icon-name="utility:flow" size="large" class="slds-m-bottom_medium"></lightning-icon>
+                            <p class="slds-text-body_regular">No relationship data found for this account.</p>
+                            <p class="slds-text-body_small slds-text-color_weak">Add contacts, opportunities, and cases to see the relationship map.</p>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

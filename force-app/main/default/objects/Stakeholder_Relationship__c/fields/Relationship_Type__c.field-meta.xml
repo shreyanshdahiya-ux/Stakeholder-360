@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Relationship_Type__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Type of relationship between the two contacts</description>
+    <label>Relationship Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Reports To</fullName>
+                <default>false</default>
+                <label>Reports To</label>
+            </value>
+            <value>
+                <fullName>Influences</fullName>
+                <default>false</default>
+                <label>Influences</label>
+            </value>
+            <value>
+                <fullName>Trusted Advisor</fullName>
+                <default>false</default>
+                <label>Trusted Advisor</label>
+            </value>
+            <value>
+                <fullName>Mentor</fullName>
+                <default>false</default>
+                <label>Mentor</label>
+            </value>
+            <value>
+                <fullName>Political Ally</fullName>
+                <default>false</default>
+                <label>Political Ally</label>
+            </value>
+            <value>
+                <fullName>Political Opponent</fullName>
+                <default>false</default>
+                <label>Political Opponent</label>
+            </value>
+            <value>
+                <fullName>Gatekeeper</fullName>
+                <default>false</default>
+                <label>Gatekeeper</label>
+            </value>
+            <value>
+                <fullName>Champion of Competitor</fullName>
+                <default>false</default>
+                <label>Champion of Competitor</label>
+            </value>
+            <value>
+                <fullName>Works Closely With</fullName>
+                <default>false</default>
+                <label>Works Closely With</label>
+            </value>
+            <value>
+                <fullName>Budget Authority Over</fullName>
+                <default>false</default>
+                <label>Budget Authority Over</label>
+            </value>
+            <value>
+                <fullName>Allies With</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Allies With</label>
+            </value>
+            <value>
+                <fullName>Blocks</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Blocks</label>
+            </value>
+            <value>
+                <fullName>Trusts</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Trusts</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

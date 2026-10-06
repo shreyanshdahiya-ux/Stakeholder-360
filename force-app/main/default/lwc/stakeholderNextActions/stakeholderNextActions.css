@@ -1,0 +1,189 @@
+/* Next Best Actions Card */
+.actions-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+/* Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: white;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-icon {
+    font-size: 20px;
+}
+
+.header-title h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.header-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+}
+
+.badge-count {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.badge-label {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Actions Content */
+.actions-content {
+    padding: 16px;
+}
+
+.actions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.action-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    background: #f8fafc;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.action-item:last-child {
+    margin-bottom: 0;
+}
+
+.action-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.action-priority {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    border-radius: 8px;
+}
+
+.priority-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+}
+
+.action-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.action-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.action-icon {
+    font-size: 16px;
+}
+
+.action-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #181818;
+}
+
+.action-description {
+    margin: 0;
+    font-size: 13px;
+    color: #57534e;
+    line-height: 1.5;
+}
+
+/* Urgency Badges */
+.urgency-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.urgency-high {
+    background: #ba0517;
+    color: white;
+}
+
+.urgency-medium {
+    background: #fe5c02;
+    color: white;
+}
+
+.urgency-low {
+    background: #706e6b;
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-text {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #181818;
+}
+
+.empty-subtext {
+    margin: 0;
+    font-size: 13px;
+    color: #706e6b;
+}
