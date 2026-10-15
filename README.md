@@ -2,6 +2,9 @@
 
 Visual relationship mapping and stakeholder intelligence for complex B2B deals, built natively on Salesforce.
 
+[![Install in Production or Developer Org](https://img.shields.io/badge/Install%20in%20Production%20%2F%20Developer%20Org-0176D3?style=for-the-badge)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
+[![Install in Sandbox](https://img.shields.io/badge/Install%20in%20Sandbox-032D60?style=for-the-badge)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
+
 Stakeholder360 helps sales teams map who matters on an Account or Opportunity: each person's role and influence, how they relate to one another, and where coverage is missing. It scores engagement, raises alerts when relationships go cold or key roles are uncovered, and suggests next best actions.
 
 ## Managed Package
