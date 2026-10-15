@@ -23,6 +23,127 @@ The package contents match everything under `force-app/` (140 components, verifi
 
 > Note: `sfdx-project.json` has an empty `namespace`. Source is deployed to the packaging org and added to the package there, and the org applies the `Stakeholder360` namespace.
 
+## Architecture
+
+Stakeholder360 has three layers: Lightning Web Components on the record pages, Apex controllers that read and write data, and the custom and standard objects underneath. There are no triggers, flows or scheduled jobs. All logic runs on demand when a component loads or a user takes an action.
+
+### Component Architecture
+
+```mermaid
+flowchart LR
+    subgraph LWC["Lightning Web Components"]
+        direction TB
+        cAccSummary["stakeholderAccountSummary"]
+        cCoverage["stakeholderCoverage"]
+        cList["stakeholderList"]
+        cForm["stakeholderForm"]
+        cMindMap["stakeholderMindMap"]
+        cGraph["stakeholderGraph"]
+        cRisk["stakeholderRiskOpportunity"]
+        cActions["stakeholderNextActions"]
+        cTimeline["stakeholderTimeline"]
+        cOrgChart["stakeholderOrgChart"]
+        cScore["stakeholderScore"]
+        cOppInsights["stakeholderOpportunityInsights"]
+        cAlerts["stakeholderAlerts"]
+        cProfile["stakeholderContactProfile"]
+        cPhoto["contactPhotoUpload"]
+    end
+
+    subgraph SR["Static Resources"]
+        srD3["d3js, d3flextree, d3orgchart"]
+        srJsMind["jsmind"]
+    end
+
+    subgraph APEX["Apex Controllers (with sharing)"]
+        aCore["Stakeholder360Controller"]
+        aAccount["StakeholderAccountController"]
+        aChart["StakeholderChartController"]
+        aOpp["StakeholderOpportunityController"]
+        aAlert["StakeholderAlertController"]
+        aContact["StakeholderContactController"]
+        aPhoto["ContactPhotoController"]
+    end
+
+    subgraph API["AuraEnabled API (not called by shipped components)"]
+        aMap["StakeholderMapController"]
+        aAlertSvc["StakeholderAlertService"]
+        aScoreCalc["StakeholderScoreCalculator"]
+    end
+
+    subgraph DATA["Data"]
+        oStakeholder[("Stakeholder__c")]
+        oRelationship[("Stakeholder_Relationship__c")]
+        oOppStakeholder[("Opportunity_Stakeholder__c")]
+        oMap[("Stakeholder_Map__c")]
+        oAlert[("Stakeholder_Alert__c")]
+        oStandard[("Account, Contact, Opportunity,<br/>OpportunityContactRole, Task")]
+        oFiles[("ContentVersion,<br/>ContentDocumentLink")]
+    end
+
+    cList --> cForm
+    cForm -. "Lightning Data Service" .-> oStakeholder
+    cOrgChart -.-> srD3
+    cGraph -.-> srJsMind
+
+    cCoverage & cList & cMindMap & cGraph & cRisk & cActions & cTimeline --> aCore
+    cAccSummary --> aAccount
+    cOrgChart & cScore --> aChart
+    cOppInsights --> aOpp
+    cAlerts --> aAlert
+    cProfile --> aContact
+    cPhoto --> aPhoto
+
+    APEX --> oStandard
+    API --> oStandard
+    aCore --> oStakeholder & oRelationship
+    aAccount --> oRelationship
+    aPhoto --> oFiles
+    aMap --> oMap & oRelationship
+    aAlertSvc --> oAlert & oOppStakeholder
+    aScoreCalc --> oOppStakeholder
+```
+
+Every controller queries the standard objects, so that link is drawn once for each group instead of once for each class.
+
+Notes:
+
+- `stakeholderAlerts` gets its alerts from `StakeholderAlertController`, which builds them live from Opportunity Contact Roles and Contacts. It does not read `Stakeholder_Alert__c` records.
+- `StakeholderMapController`, `StakeholderAlertService` and `StakeholderScoreCalculator` expose `@AuraEnabled` methods and are granted in all three permission sets, but no component in this package calls them. They are the only code that works with `Stakeholder_Map__c`, `Stakeholder_Alert__c` and `Opportunity_Stakeholder__c`.
+
+### Record Page Placement
+
+| Record page | Components |
+|---|---|
+| Account | `stakeholderAccountSummary`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderMindMap`, `stakeholderList`, `stakeholderCoverage`, `stakeholderRiskOpportunity`, `stakeholderNextActions`, `stakeholderTimeline` |
+| Opportunity | `stakeholderOpportunityInsights`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderScore`, `stakeholderAlerts` |
+| Contact | `stakeholderContactProfile`, `contactPhotoUpload` |
+
+`stakeholderForm` is not placed on a page directly. It opens from `stakeholderList`.
+
+### Data Model
+
+```mermaid
+erDiagram
+    Account |o--o{ Stakeholder__c : "Account__c"
+    Contact |o--o{ Stakeholder__c : "Contact__c"
+    Opportunity ||--o{ Opportunity_Stakeholder__c : "Opportunity__c (master-detail)"
+    Contact ||--o{ Opportunity_Stakeholder__c : "Contact__c (required)"
+    Stakeholder__c |o--o{ Opportunity_Stakeholder__c : "Stakeholder__c"
+    Contact |o--o{ Stakeholder_Relationship__c : "From_Contact__c"
+    Contact |o--o{ Stakeholder_Relationship__c : "To_Contact__c"
+    Account |o--o{ Stakeholder_Relationship__c : "Account__c"
+    Account ||--o{ Stakeholder_Map__c : "Account__c (master-detail)"
+    Contact ||--o{ Stakeholder_Map__c : "Contact__c (required)"
+    Stakeholder_Map__c |o--o{ Stakeholder_Map__c : "Parent_Node__c"
+    Account |o--o{ Stakeholder_Alert__c : "Account__c"
+    Opportunity |o--o{ Stakeholder_Alert__c : "Opportunity__c"
+    Contact |o--o{ Stakeholder_Alert__c : "Contact__c"
+    Contact |o--o{ Contact : "Reports_To_Contact__c"
+```
+
+All relationships are lookups unless marked master-detail. `Opportunity_Stakeholder__c` is deleted with its Opportunity, and `Stakeholder_Map__c` is deleted with its Account.
+
 ## What's Included
 
 ### Custom Objects
