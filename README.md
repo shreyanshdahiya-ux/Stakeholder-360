@@ -2,10 +2,10 @@
 
 Visual relationship mapping and stakeholder intelligence for complex B2B deals, built natively on Salesforce.
 
+Stakeholder360 helps sales teams map who matters on an Account or Opportunity: each person's role and influence, how they relate to one another, and where coverage is missing. It scores engagement, raises alerts when relationships go cold or key roles are uncovered, and suggests next best actions.
+
 [![Install in Production or Developer Org](https://img.shields.io/badge/Install%20in%20Production%20%2F%20Developer%20Org-0176D3?style=for-the-badge)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
 [![Install in Sandbox](https://img.shields.io/badge/Install%20in%20Sandbox-032D60?style=for-the-badge)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
-
-Stakeholder360 helps sales teams map who matters on an Account or Opportunity: each person's role and influence, how they relate to one another, and where coverage is missing. It scores engagement, raises alerts when relationships go cold or key roles are uncovered, and suggests next best actions.
 
 ## Managed Package
 
@@ -17,10 +17,7 @@ Stakeholder360 helps sales teams map who matters on an Account or Opportunity: e
 | Released version | 1.0.0 (Spring 2026) |
 | Version ID | `04tf6000000EtflAAC` |
 
-Install links:
-
-- Production / Developer Edition: https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC
-- Sandbox: https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC
+To install, use the buttons at the top of this page. Choose **Install in Sandbox** for sandbox orgs and **Install in Production / Developer Org** for everything else.
 
 The package contents match everything under `force-app/` (140 components, verified on 2026-10-06).
 
@@ -217,11 +214,17 @@ Each class has a matching `*Test` class.
 
 ### Permission Sets
 
-| Permission Set | Access |
-|---|---|
-| Stakeholder360 Admin | Full access and configuration |
-| Stakeholder360 Manager | Create, read and edit all team data. No delete. |
-| Stakeholder360 User | Create and edit own records. Read only on alerts and scores. |
+| Permission Set | Access to `Stakeholder__c`, `Stakeholder_Relationship__c` and `Stakeholder_Alert__c` | Score fields |
+|---|---|---|
+| Stakeholder360 Admin | Create, read, edit and delete, with View All and Modify All. Also read on Account and Opportunity. | Editable |
+| Stakeholder360 Manager | Create, read and edit, with View All. No delete. | Read only, except `Opportunity.Stakeholder_Score__c` |
+| Stakeholder360 User | Create, read and edit. No delete and no View All. | Read only |
+
+Score fields are `Contact.Stakeholder_Score__c`, `Opportunity.Stakeholder_Score__c` and `Stakeholder__c.Priority_Score__c`.
+
+Which records a user can see also depends on each object's sharing model. `Stakeholder__c` is Private, so without View All a user sees only the stakeholder records they own or that are shared with them. `Stakeholder_Relationship__c` and `Stakeholder_Alert__c` are Public Read/Write, so every user with object access can see and edit all of them. `Opportunity_Stakeholder__c` and `Stakeholder_Map__c` follow their parent Opportunity and Account.
+
+> Known gap in 1.0.0: none of the permission sets grant access to `Opportunity_Stakeholder__c` or `Stakeholder_Map__c`, although both have tabs in the Stakeholder360 app. Grant access to these objects separately (for example with a custom permission set) if your users need them.
 
 ## Post-Install Setup
 
@@ -281,7 +284,7 @@ Compare `pkg-check/unpackaged/Stakeholder360/package.xml` with `local.xml`.
 ```bash
 npm install
 npm run lint              # ESLint for LWC
-npm run test:unit         # LWC Jest tests
+npm run test:unit         # LWC Jest tests (none written yet)
 npm run prettier          # Format source
 ```
 
