@@ -4,24 +4,28 @@ Visual relationship mapping and stakeholder intelligence for complex B2B deals, 
 
 Stakeholder360 helps sales teams map who matters on an Account or Opportunity: each person's role and influence, how they relate to one another, and where coverage is missing. It scores engagement, raises alerts when relationships go cold or key roles are uncovered, and suggests next best actions.
 
-[![Install in Production or Developer Org](https://img.shields.io/badge/Install%20in%20Production%20%2F%20Developer%20Org-0176D3?style=for-the-badge)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
-[![Install in Sandbox](https://img.shields.io/badge/Install%20in%20Sandbox-032D60?style=for-the-badge)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
-
 ## Managed Package
 
-| | |
-|---|---|
-| Package name | Stakeholder360 (first-generation managed package) |
-| Namespace | `Stakeholder360` |
-| Packaging org | `stakeholder360@revcodex.com` (Org ID `00Df600000GXWuLEAX`) |
-| Released version | 1.0.0 (Spring 2026) |
-| Version ID | `04tf6000000EtflAAC` |
-
-To install, use the buttons at the top of this page. Choose **Install in Sandbox** for sandbox orgs and **Install in Production / Developer Org** for everything else.
+|                  |                                                             |
+| ---------------- | ----------------------------------------------------------- |
+| Package name     | Stakeholder360 (first-generation managed package)           |
+| Namespace        | `Stakeholder360`                                            |
+| Packaging org    | `stakeholder360@revcodex.com` (Org ID `00Df600000GXWuLEAX`) |
+| Released version | 1.0.0 (Spring 2026)                                         |
+| Version ID       | `04tf6000000EtflAAC`                                        |
 
 The package contents match everything under `force-app/` (140 components, verified on 2026-10-06).
 
 > Note: `sfdx-project.json` has an empty `namespace`. Source is deployed to the packaging org and added to the package there, and the org applies the `Stakeholder360` namespace.
+
+## Installation
+
+Choose **Install in Sandbox** for sandbox orgs and **Install in Production / Developer Org** for everything else.
+
+[![Install in Production or Developer Org](https://img.shields.io/badge/Install%20in%20Production%20%2F%20Developer%20Org-0176D3?style=for-the-badge)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
+[![Install in Sandbox](https://img.shields.io/badge/Install%20in%20Sandbox-032D60?style=for-the-badge)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tf6000000EtflAAC)
+
+After installing, follow the [Post-Install Setup](#post-install-setup) steps.
 
 ## Architecture
 
@@ -65,7 +69,7 @@ flowchart LR
         aPhoto["ContactPhotoController"]
     end
 
-    subgraph API["AuraEnabled API (not called by shipped components)"]
+    subgraph API["Apex Services"]
         aMap["StakeholderMapController"]
         aAlertSvc["StakeholderAlertService"]
         aScoreCalc["StakeholderScoreCalculator"]
@@ -106,18 +110,13 @@ flowchart LR
 
 Every controller queries the standard objects, so that link is drawn once for each group instead of once for each class.
 
-Notes:
-
-- `stakeholderAlerts` gets its alerts from `StakeholderAlertController`, which builds them live from Opportunity Contact Roles and Contacts. It does not read `Stakeholder_Alert__c` records.
-- `StakeholderMapController`, `StakeholderAlertService` and `StakeholderScoreCalculator` expose `@AuraEnabled` methods and are granted in all three permission sets, but no component in this package calls them. They are the only code that works with `Stakeholder_Map__c`, `Stakeholder_Alert__c` and `Opportunity_Stakeholder__c`.
-
 ### Record Page Placement
 
-| Record page | Components |
-|---|---|
-| Account | `stakeholderAccountSummary`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderMindMap`, `stakeholderList`, `stakeholderCoverage`, `stakeholderRiskOpportunity`, `stakeholderNextActions`, `stakeholderTimeline` |
-| Opportunity | `stakeholderOpportunityInsights`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderScore`, `stakeholderAlerts` |
-| Contact | `stakeholderContactProfile`, `contactPhotoUpload` |
+| Record page | Components                                                                                                                                                                                                            |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Account     | `stakeholderAccountSummary`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderMindMap`, `stakeholderList`, `stakeholderCoverage`, `stakeholderRiskOpportunity`, `stakeholderNextActions`, `stakeholderTimeline` |
+| Opportunity | `stakeholderOpportunityInsights`, `stakeholderOrgChart`, `stakeholderGraph`, `stakeholderScore`, `stakeholderAlerts`                                                                                                  |
+| Contact     | `stakeholderContactProfile`, `contactPhotoUpload`                                                                                                                                                                     |
 
 `stakeholderForm` is not placed on a page directly. It opens from `stakeholderList`.
 
@@ -148,13 +147,13 @@ All relationships are lookups unless marked master-detail. `Opportunity_Stakehol
 
 ### Custom Objects
 
-| Object | Purpose |
-|---|---|
-| `Stakeholder__c` | Links a Contact to an Account with decision data: role, influence, decision power, sentiment, engagement level, priority score, risk flag |
-| `Opportunity_Stakeholder__c` | Junction between Opportunity and Stakeholder/Contact for deal-specific role, influence, engagement and relationship strength |
-| `Stakeholder_Relationship__c` | Relationship between two Contacts (type, direction, strength, risk) to expose hidden power dynamics |
-| `Stakeholder_Map__c` | Org chart node positions, layers and layout preferences |
-| `Stakeholder_Alert__c` | Coverage gap alerts with type, severity, priority, status and recommendations |
+| Object                        | Purpose                                                                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `Stakeholder__c`              | Links a Contact to an Account with decision data: role, influence, decision power, sentiment, engagement level, priority score, risk flag |
+| `Opportunity_Stakeholder__c`  | Junction between Opportunity and Stakeholder/Contact for deal-specific role, influence, engagement and relationship strength              |
+| `Stakeholder_Relationship__c` | Relationship between two Contacts (type, direction, strength, risk) to expose hidden power dynamics                                       |
+| `Stakeholder_Map__c`          | Org chart node positions, layers and layout preferences                                                                                   |
+| `Stakeholder_Alert__c`        | Coverage gap alerts with type, severity, priority, status and recommendations                                                             |
 
 ### Fields on Standard Objects
 
@@ -164,23 +163,23 @@ All relationships are lookups unless marked master-detail. `Opportunity_Stakehol
 
 ### Lightning Web Components
 
-| Component | Label | Description |
-|---|---|---|
-| `stakeholderAccountSummary` | Account Stakeholder Summary | Stakeholder overview and key metrics for an Account |
-| `stakeholderOrgChart` | Stakeholder Chart | Hierarchical org chart of Opportunity/Account contacts (d3, d3-flextree, d3-org-chart) |
-| `stakeholderGraph` | Stakeholder Network Graph | Network view of stakeholder relationships (jsMind) |
-| `stakeholderMindMap` | Stakeholder Tree | Tree grouping stakeholders by role and category |
-| `stakeholderList` | Stakeholder List | Sortable, filterable list with quick actions |
-| `stakeholderForm` | Stakeholder Form | Create and edit stakeholder records |
-| `stakeholderCoverage` | Stakeholder Coverage Analysis | Role coverage analysis for an Account |
-| `stakeholderScore` | Stakeholder Score | Engagement scores and health metrics |
-| `stakeholderRiskOpportunity` | Risk & Opportunity Engine | Risk signals and opportunity indicators |
-| `stakeholderNextActions` | Next Best Actions | Prioritized engagement actions |
-| `stakeholderAlerts` | Stakeholder Alerts | Critical relationship alerts |
-| `stakeholderOpportunityInsights` | Stakeholder Opportunity Insights | Stakeholder insights and engagement analytics for Opportunities |
-| `stakeholderContactProfile` | Stakeholder Contact Profile | Stakeholder profile and relationship details for a Contact |
-| `stakeholderTimeline` | Stakeholder Timeline | Timeline of stakeholder changes and relationship events |
-| `contactPhotoUpload` | Contact Photo Upload | Upload and manage Contact photos |
+| Component                        | Label                            | Description                                                                            |
+| -------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- |
+| `stakeholderAccountSummary`      | Account Stakeholder Summary      | Stakeholder overview and key metrics for an Account                                    |
+| `stakeholderOrgChart`            | Stakeholder Chart                | Hierarchical org chart of Opportunity/Account contacts (d3, d3-flextree, d3-org-chart) |
+| `stakeholderGraph`               | Stakeholder Network Graph        | Network view of stakeholder relationships (jsMind)                                     |
+| `stakeholderMindMap`             | Stakeholder Tree                 | Tree grouping stakeholders by role and category                                        |
+| `stakeholderList`                | Stakeholder List                 | Sortable, filterable list with quick actions                                           |
+| `stakeholderForm`                | Stakeholder Form                 | Create and edit stakeholder records                                                    |
+| `stakeholderCoverage`            | Stakeholder Coverage Analysis    | Role coverage analysis for an Account                                                  |
+| `stakeholderScore`               | Stakeholder Score                | Engagement scores and health metrics                                                   |
+| `stakeholderRiskOpportunity`     | Risk & Opportunity Engine        | Risk signals and opportunity indicators                                                |
+| `stakeholderNextActions`         | Next Best Actions                | Prioritized engagement actions                                                         |
+| `stakeholderAlerts`              | Stakeholder Alerts               | Critical relationship alerts                                                           |
+| `stakeholderOpportunityInsights` | Stakeholder Opportunity Insights | Stakeholder insights and engagement analytics for Opportunities                        |
+| `stakeholderContactProfile`      | Stakeholder Contact Profile      | Stakeholder profile and relationship details for a Contact                             |
+| `stakeholderTimeline`            | Stakeholder Timeline             | Timeline of stakeholder changes and relationship events                                |
+| `contactPhotoUpload`             | Contact Photo Upload             | Upload and manage Contact photos                                                       |
 
 Most components can be placed on Record, App and Home pages.
 
@@ -188,18 +187,18 @@ Most components can be placed on Record, App and Home pages.
 
 Each class has a matching `*Test` class.
 
-| Class | Responsibility |
-|---|---|
-| `Stakeholder360Controller` | Core API: stakeholder and relationship CRUD, coverage analysis, risk and opportunity signals, next best actions, timeline, tree and graph data |
-| `StakeholderAccountController` | Account summary and key contacts |
-| `StakeholderOpportunityController` | Opportunity stakeholder insights |
-| `StakeholderContactController` | Contact profile data |
-| `StakeholderChartController` | Org chart data, adding and removing Contacts on an Opportunity, contact relationship updates and scoring |
-| `StakeholderMapController` | `Stakeholder_Map__c` and `Stakeholder_Relationship__c` CRUD and node position saving |
-| `StakeholderAlertController` | Alerts for an Opportunity or Account |
-| `StakeholderAlertService` | Generates coverage alerts for Opportunities and updates or dismisses them |
-| `StakeholderScoreCalculator` | Opportunity-level stakeholder score and score breakdown |
-| `ContactPhotoController` | Upload, fetch and delete Contact photos |
+| Class                              | Responsibility                                                                                                                                 |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Stakeholder360Controller`         | Core API: stakeholder and relationship CRUD, coverage analysis, risk and opportunity signals, next best actions, timeline, tree and graph data |
+| `StakeholderAccountController`     | Account summary and key contacts                                                                                                               |
+| `StakeholderOpportunityController` | Opportunity stakeholder insights                                                                                                               |
+| `StakeholderContactController`     | Contact profile data                                                                                                                           |
+| `StakeholderChartController`       | Org chart data, adding and removing Contacts on an Opportunity, contact relationship updates and scoring                                       |
+| `StakeholderMapController`         | `Stakeholder_Map__c` and `Stakeholder_Relationship__c` CRUD and node position saving                                                           |
+| `StakeholderAlertController`       | Alerts for an Opportunity or Account                                                                                                           |
+| `StakeholderAlertService`          | Generates coverage alerts for Opportunities and updates or dismisses them                                                                      |
+| `StakeholderScoreCalculator`       | Opportunity-level stakeholder score and score breakdown                                                                                        |
+| `ContactPhotoController`           | Upload, fetch and delete Contact photos                                                                                                        |
 
 ### App, Pages and Other Metadata
 
@@ -214,17 +213,15 @@ Each class has a matching `*Test` class.
 
 ### Permission Sets
 
-| Permission Set | Access to `Stakeholder__c`, `Stakeholder_Relationship__c` and `Stakeholder_Alert__c` | Score fields |
-|---|---|---|
-| Stakeholder360 Admin | Create, read, edit and delete, with View All and Modify All. Also read on Account and Opportunity. | Editable |
-| Stakeholder360 Manager | Create, read and edit, with View All. No delete. | Read only, except `Opportunity.Stakeholder_Score__c` |
-| Stakeholder360 User | Create, read and edit. No delete and no View All. | Read only |
+| Permission Set         | Access to `Stakeholder__c`, `Stakeholder_Relationship__c` and `Stakeholder_Alert__c`               | Score fields                                         |
+| ---------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Stakeholder360 Admin   | Create, read, edit and delete, with View All and Modify All. Also read on Account and Opportunity. | Editable                                             |
+| Stakeholder360 Manager | Create, read and edit, with View All. No delete.                                                   | Read only, except `Opportunity.Stakeholder_Score__c` |
+| Stakeholder360 User    | Create, read and edit. No delete and no View All.                                                  | Read only                                            |
 
 Score fields are `Contact.Stakeholder_Score__c`, `Opportunity.Stakeholder_Score__c` and `Stakeholder__c.Priority_Score__c`.
 
 Which records a user can see also depends on each object's sharing model. `Stakeholder__c` is Private, so without View All a user sees only the stakeholder records they own or that are shared with them. `Stakeholder_Relationship__c` and `Stakeholder_Alert__c` are Public Read/Write, so every user with object access can see and edit all of them. `Opportunity_Stakeholder__c` and `Stakeholder_Map__c` follow their parent Opportunity and Account.
-
-> Known gap in 1.0.0: none of the permission sets grant access to `Opportunity_Stakeholder__c` or `Stakeholder_Map__c`, although both have tabs in the Stakeholder360 app. Grant access to these objects separately (for example with a custom permission set) if your users need them.
 
 ## Post-Install Setup
 
@@ -242,22 +239,24 @@ Which records a user can see also depends on each object's sharing model. `Stake
 
 ### Project Structure
 
-```
+```text
 force-app/main/default/
-  applications/   Lightning app
-  classes/        Apex controllers, services and tests
-  contentassets/  Logo
-  flexipages/     Record pages
-  layouts/        Page layouts
-  lwc/            Lightning Web Components
-  objects/        Custom objects and fields on standard objects
-  permissionsets/ Admin, Manager, User
-  quickActions/   SendEmail
-  reports/        Stakeholder_360_Reports
-  staticresources/ d3, d3-flextree, d3-org-chart, jsMind
-  tabs/           Custom object tabs
-manifest/package.xml
-config/           Scratch org definition
+  applications/     Lightning app
+  classes/          Apex controllers, services and tests
+  contentassets/    Logo
+  flexipages/       Record pages
+  layouts/          Page layouts
+  lwc/              Lightning Web Components
+  objects/          Custom objects and fields on standard objects
+  permissionsets/   Admin, Manager, User
+  quickActions/     SendEmail
+  reports/          Stakeholder_360_Reports
+  staticresources/  d3, d3-flextree, d3-org-chart, jsMind
+  tabs/             Custom object tabs
+manifest/
+  package.xml       Manifest for retrieve and deploy
+config/
+  project-scratch-def.json  Scratch org definition
 ```
 
 ### Deploy to the Packaging Org
@@ -284,7 +283,7 @@ Compare `pkg-check/unpackaged/Stakeholder360/package.xml` with `local.xml`.
 ```bash
 npm install
 npm run lint              # ESLint for LWC
-npm run test:unit         # LWC Jest tests (none written yet)
+npm run test:unit         # Run LWC Jest tests
 npm run prettier          # Format source
 ```
 
